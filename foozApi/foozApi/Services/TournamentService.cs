@@ -55,6 +55,11 @@ public class TournamentService
         foreach (var ind in Enumerable.Range(0, roundCount))
         {
             var currentSplit = (ind == roundCount - 1 ? finalSplit : split);
+            if (currentSplit % 2 == 0) 
+            {
+                currentSplit = currentSplit - 1 + ((ind % 2) * 2);
+            }
+
             var take = participantCount - currentSplit;
             var roundParticipants = allParticipants.Shift(split * ind).Take(take);
             rounds.Add(CreateRound(ind, roundParticipants, tournament));
