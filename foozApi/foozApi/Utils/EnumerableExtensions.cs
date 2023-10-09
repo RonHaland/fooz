@@ -24,7 +24,7 @@ public static class EnumerableExtensions
             return list;
         }
 
-        return list.Skip(shiftBy).Concat(list.Take(shiftBy)).ToList();
+        return list.Concat(list.Take(shiftBy)).Skip(shiftBy).ToList();
     }
 
     public static List<T> ShiftRight<T>(this List<T> list, int shiftBy)
