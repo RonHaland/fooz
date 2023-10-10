@@ -1,9 +1,20 @@
-﻿using System.Text.Json.Serialization;
+﻿using foozApi.Storage.Entities;
+using System.Text.Json.Serialization;
 
 namespace foozApi.Models;
 
 public class Round
 {
+    public Round()
+    {
+    }
+
+    public Round(RoundEntity entity, Tournament tournament)
+    {
+        Tournament = tournament;
+        RoundNumber = int.Parse(entity.RowKey);
+    }
+
     public string Id => $"{Tournament.Id}_{RoundNumber}";
     [JsonIgnore]
     public Tournament Tournament { get; set; } = null!;

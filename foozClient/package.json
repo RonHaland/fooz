@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "fooz-tournament",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -7,7 +7,6 @@
     "build": "remix build",
     "dev": "run-p dev:*",
     "dev:remix": "remix dev --manual",
-    "dev:styles": "npx tailwindcss -i ./app/styles/input.css -o ./app/styles/output.css -w",
     "start": "remix-serve ./build/index.js",
     "typecheck": "tsc"
   },

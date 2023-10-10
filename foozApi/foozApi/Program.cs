@@ -31,7 +31,12 @@ app.MapPost("/Tournament", async ([FromBody] PostTournament body) =>
 {
     return await tournamentService.CreateTournament(body);
 })
-.WithName("GetWeatherForecast")
+.WithName("PostTournament")
 .WithOpenApi();
+
+app.MapGet("/Tournament/{tournamentId}", async ([FromRoute] string tournamentId) =>
+{
+    return await storageService.GetTournament(tournamentId);
+});
 
 app.Run();

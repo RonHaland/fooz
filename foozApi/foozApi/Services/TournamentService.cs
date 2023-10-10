@@ -33,7 +33,7 @@ public class TournamentService
             player.Teams = teams;
         }
 
-        //await _tableStorage.AddTournament(tournam=t);
+        await _tableStorage.AddTournament(tournament);
 
         return tournament;
     }
@@ -54,7 +54,7 @@ public class TournamentService
         var participantCount = participants.Count();
         if (participantCount % 2 == 0)
         {
-            return Enumerable.Range(0, roundCount - 1).Select(i => CreateRound(i, participants, tournament));
+            return Enumerable.Range(0, roundCount).Select(i => CreateRound(i, participants, tournament));
         }
 
         // split is how many players we will have to skip this round in order for everyone to have the same number of games
