@@ -7,7 +7,7 @@ public class Team
 {
     public Team()
     {
-        
+        Id = Guid.NewGuid();
     }
     public Team(TeamEntity entity, IDictionary<string, Round> roundDictionary, IDictionary<string, Participant> playerDictionary)
     {
@@ -16,7 +16,7 @@ public class Team
         Player1 = playerDictionary[entity.Player1Id];
         Player2 = playerDictionary[entity.Player2Id];
     }
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     public string RoundId => $"{Round.Tournament.Id}_{Round.RoundNumber}";
     [JsonIgnore]
     public Round Round { get; set; } = null!;

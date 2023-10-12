@@ -6,6 +6,7 @@ namespace foozApi.Models;
 public class Match
 {
     public Match() {}
+
     public Match(MatchEntity entity, IDictionary<string, Round> roundDictionary, IDictionary<string, Team> teamDictionary)
     {
         Id = Guid.Parse(entity.RowKey);
@@ -21,6 +22,7 @@ public class Match
     public Guid Id { get; set; } = Guid.NewGuid();
     public string RoundId => $"{Round.Tournament.Id}_{Round.RoundNumber}";
     public int MatchNumber { get; set; } = 0;
+    public int RoundNumber => Round.RoundNumber;
     [JsonIgnore]
     public Round Round { get; set; } = null!;
     public bool IsCompleted { get; set; } = false;

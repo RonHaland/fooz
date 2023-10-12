@@ -17,6 +17,7 @@ public class MatchEntity : ITableEntity
         Team2Id = model.Team2.Id.ToString();
         Team2Score = model.Team2.Score;
         MatchNumber = model.MatchNumber;
+        RoundNumber = model.RoundNumber;
         IsCompleted = model.IsCompleted;
     }
 
@@ -25,6 +26,7 @@ public class MatchEntity : ITableEntity
     public string Team2Id { get; set; } = null!;
     public int Team2Score { get; set; }
     public int MatchNumber { get; set; }
+    public int RoundNumber { get; set; }
     public bool IsCompleted { get; set; }
 
     public string PartitionKey { get; set; } = null!;

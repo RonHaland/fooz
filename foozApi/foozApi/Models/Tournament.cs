@@ -12,6 +12,7 @@ public class Tournament
     }
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = null!;
+    public bool IsCompleted => Rounds.All(m => m.IsCompleted);
     public IEnumerable<Participant> Participants { get; set; } = Enumerable.Empty<Participant>();
-    public IOrderedEnumerable<Round> Rounds { get; set; } = Enumerable.Empty<Round>().Order();
+    public IEnumerable<Round> Rounds { get; set; } = Enumerable.Empty<Round>().Order();
 }

@@ -22,14 +22,16 @@ public class TournamentService
         };
 
         tournament.Participants = CreateParticipants(postTournament.Participants, tournament).ToList();
-        tournament.Rounds = CreateRounds(postTournament.RoundCount, tournament.Participants, tournament).OrderBy(r => r.RoundNumber);
+        //var rounds = CreateRounds(postTournament.RoundCount, tournament.Participants, tournament).ToList();
+        tournament.Rounds = CreateRounds(postTournament.RoundCount, tournament.Participants, tournament).OrderBy(r => r.RoundNumber).ToList();
 
         foreach (var player in tournament.Participants)
         {
             var teams = tournament.Rounds
                 .SelectMany(r => r.Teams)
                 .Where(t => t.Player1.Id.Equals(player.Id)
-                        || t.Player2.Id.Equals(player.Id));
+                        || t.Player2.Id.Equals(player.Id))
+                .ToList();
             player.Teams = teams;
         }
 
@@ -101,11 +103,13 @@ public class TournamentService
                     Player2 = participantList[i+1],
                 } 
                 : null)
-            .Where(p => p != null);
-        round.Teams = teams!;
+            .Where(p => p != null)
+            .Select(p => p!)
+            .ToList();
+        round.Teams = teams;
         
 
-        round.Matches = CreateMatches(round, teams!);
+        round.Matches = CreateMatches(round, teams);
 
         return round;
     }
@@ -121,16 +125,18 @@ public class TournamentService
         {
             foreach (var ind in Enumerable.Range(0, subRoundCount))
             {
-                var newMatches = teams.Select((sr, i) => i % 2 == 0
+                var matchNumber = 0;
+                var newMatches = teams.Shift(3 * ind).Select((sr, i) => i % 2 == 0
                 ? new Match
                 {
                     Team1 = matchTeams[i],
                     Team2 = matchTeams[i + 1],
                     Round = round,
-                    MatchNumber = ind,
+                    MatchNumber = matchNumber++,
                 }
                 : null)
-                .Where(m => m != null);
+                .Where(m => m != null)
+                .ToList();
 
                 matches.AddRange(newMatches!);
             }
@@ -139,12 +145,12 @@ public class TournamentService
         {
             var split = teamCount / subRoundCount;
             var finalSplit = teamCount - (split * (subRoundCount - 1));
-
+            var matchNumber = 0;
 
             foreach (var ind in Enumerable.Range(0, subRoundCount))
             {
                 var currentSplit = (ind == subRoundCount - 1 ? finalSplit : split);
-                var take = subRoundCount - currentSplit;
+                var take = teamCount - currentSplit;
                 var subRoundTeams = matchTeams.Shift(split * ind).Take(take).ToList();
                 var newMatches = subRoundTeams.Select((sr, i) => i % 2 == 0
                     ? new Match
@@ -152,10 +158,11 @@ public class TournamentService
                         Team1 = subRoundTeams[i],
                         Team2 = subRoundTeams[i + 1],
                         Round = round,
-                        MatchNumber = ind,
+                        MatchNumber = matchNumber++,
                     }
                     : null)
-                    .Where(m => m != null);
+                    .Where(m => m != null)
+                    .ToList();
 
                 matches.AddRange(newMatches!);
             }

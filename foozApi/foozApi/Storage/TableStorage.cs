@@ -1,6 +1,7 @@
 ﻿using Azure.Data.Tables;
 using foozApi.Models;
 using foozApi.Storage.Entities;
+using System.Linq;
 
 namespace foozApi.Storage;
 
@@ -46,21 +47,21 @@ public class TableStorage
             tasks.Add(RoundClient.AddEntityAsync(roundEntity));
         }
 
-        var matches = tournament.Rounds.SelectMany(r => r.Matches).ToList();
+        var matches = tournament.Rounds.SelectMany(r => r.Matches).ToArray();
         foreach (var match in matches)
         {
             var matchEntity = new MatchEntity(match);
             tasks.Add(MatchClient.AddEntityAsync(matchEntity));
         }
 
-        var teams = tournament.Rounds.SelectMany(r => r.Teams).ToList();
+        var teams = tournament.Rounds.SelectMany(r => r.Teams);
         foreach (var team in teams)
         {
             var teamEntity = new TeamEntity(team);
             tasks.Add(TeamClient.AddEntityAsync(teamEntity));
         }
 
-        var participants = tournament.Participants.ToList();
+        var participants = tournament.Participants;
         foreach (var participant in participants)
         {
             var participantEntity = new ParticipantEntity(participant);
@@ -69,7 +70,6 @@ public class TableStorage
 
         await Task.WhenAll(tasks);
     }
-
 
     public async Task<Models.Tournament?> GetTournament(string tournamentId)
     {
@@ -92,34 +92,71 @@ public class TableStorage
         var participantEntities = ParticipantClient.Query<ParticipantEntity>($"PartitionKey eq '{tournamentId}'");
 
         var tournament = new Tournament(tournamentEntity);
-        var participants = participantEntities.Select(p => new Participant(p));
-        var rounds = tournamentRoundEntities.Select(r => new Round(r, tournament));
+        var participants = participantEntities.Select(p => new Participant(p)).ToList();
+        var rounds = tournamentRoundEntities.Select(r => new Round(r, tournament)).ToList();
         var roundDictionary = rounds.ToDictionary(r => r.Id);
         var playerDictionary = participants.ToDictionary(p => p.Id.ToString());
 
         var teams = teamEntities.Select(t => new Team(t, roundDictionary, playerDictionary));
 
         var teamDictionary = teams.ToDictionary(t => t.Id.ToString());
-        var matches = matchEntities.Select(m => new Match(m, roundDictionary, teamDictionary));
+        var matches = matchEntities.Select(m => new Match(m, roundDictionary, teamDictionary)).ToList();
 
         foreach (var round in rounds)
         {
-            var roundMatches = matches.Where(m => m.RoundId == round.Id);
-            var roundTeams = teams.Where(t => t.RoundId == round.Id);
+            var roundMatches = matches.Where(m => m.RoundId == round.Id).ToList();
+            var roundTeams = teams.Where(t => t.RoundId == round.Id).ToList();
             round.Matches = roundMatches.OrderBy(m => m.MatchNumber);
             round.Teams = roundTeams;
         }
 
-        tournament.Rounds = rounds.OrderBy(r => r.RoundNumber);
+        tournament.Rounds = rounds.OrderBy(r => r.RoundNumber).ToList();
         tournament.Participants = participants;
         foreach (var player in participants)
         {
             var playerTeams = teams
                 .Where(t => t.Player1.Id.Equals(player.Id)
-                        || t.Player2.Id.Equals(player.Id));
+                        || t.Player2.Id.Equals(player.Id))
+                .ToList();
             player.Teams = playerTeams;
         }
 
         return tournament;
+    }
+
+    public async Task<IEnumerable<Match>?> GetMatches(string tournamentId)
+    {
+        var tournament = await GetTournament(tournamentId);
+        return tournament?.Rounds.SelectMany(r => r.Matches).OrderBy(m => m.Round.RoundNumber).ThenBy(m => m.MatchNumber).ToList();
+    }
+
+    public async Task<IEnumerable<Match>?> GetMatchesAsync(string tournamentId)
+    {
+        var matchQuery = $"PartitionKey gt '{tournamentId}' and PartitionKey lt '{tournamentId}a'";
+        var matchEntities = MatchClient.Query<MatchEntity>(matchQuery).ToList();
+
+        var rounds = matchEntities.Select(m => m.RoundNumber)
+            .Distinct()
+            .Select(rn => new Round 
+            { 
+                Tournament = new Tournament 
+                { Id = Guid.Parse(tournamentId) },
+                RoundNumber = rn,
+            }).ToDictionary(r => r.Id);
+
+        var playerEntities = ParticipantClient.Query<ParticipantEntity>($"PartitionKey eq '{tournamentId}'");
+        var players = playerEntities.Select(p => new Participant(p)).ToDictionary(p => p.Id.ToString());
+
+        var teamQuery = string.Join(" or ", 
+            matchEntities.Select(m => m.PartitionKey)
+                        .Distinct()
+                        .Select(pk => $"(PartitionKey ge '{pk}' and PartitionKey lt '{pk}a')"));
+        var teamEntities = TeamClient.Query<TeamEntity>(teamQuery).ToList();
+        var teams = teamEntities.Select(t => new Team(t, rounds, players)).ToDictionary(t => t.Id.ToString());
+
+        var matches = matchEntities.Select(m => new Match(m, rounds, teams));
+
+
+        return matches.ToList();
     }
 }
