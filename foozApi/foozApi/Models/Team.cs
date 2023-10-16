@@ -21,7 +21,17 @@ public class Team
     [JsonIgnore]
     public Round Round { get; set; } = null!;
 
+    [JsonIgnore]
+    public IEnumerable<Match> HomeMatches { get; set; } = Enumerable.Empty<Match>();
+    [JsonIgnore]
+    public IEnumerable<Match> AwayMatches { get; set; } = Enumerable.Empty<Match>();
+
     public Participant Player1 { get; set; } = null!;
     public Participant Player2 { get; set; } = null!;
-    public int Score { get; set; } = 0;
+    public int Score => CalculateScore();
+
+    private int CalculateScore()
+    {
+        return HomeMatches.Sum(m => m.Team1Score) + AwayMatches.Sum(m => m.Team2Score);
+    }
 }

@@ -12,7 +12,7 @@ export const ImageHeader = ({ src = "", alt = "", text = "" }: Props) => {
         alt={alt}
         loading="lazy"
       />
-      <div className="relative bg-slate-100 dark:bg-slate-800 rounded-r row-start-2 sm:row-start-3 col-span-3 sm:col-span-2 flex justify-end items-end">
+      <div className="relative bg-indigo-200 dark:bg-slate-800 rounded-r row-start-2 sm:row-start-3 col-span-3 sm:col-span-2 flex justify-end items-end h-fit">
         <h1 className="text-2xl lg:text-5xl text-slate-800 dark:text-slate-100 text-end mx-4 h-fit">
           {text}
         </h1>

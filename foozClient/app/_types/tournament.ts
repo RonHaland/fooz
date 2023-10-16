@@ -1,5 +1,16 @@
 export type Tournament = {
+  id: string;
+  name: string;
+  isCompleted: boolean;
+  participants: Player[];
+  rounds: Round[];
+}
 
+export type Round = {
+  roundNumber: number;
+  isCompleted: boolean;
+  matches: Match[];
+  teams: Team[];
 }
 
 export type Match = {
@@ -25,6 +36,7 @@ export type Player = {
   id: string;
   name: string;
   score: 0;
+  matchCount: number;
 }
 
 export type CurrentMatch = {

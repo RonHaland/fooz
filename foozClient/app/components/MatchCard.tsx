@@ -29,11 +29,11 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
       </a>
       <div className="flex flex-row justify-between py-2">
         <div
-          className={`flex flex-col p-1 rounded ${
-            winningTeam == 1 && "border-green-400 border bg-green-800/50"
-          } ${winningTeam == 2 && "border-red-400 border bg-red-800/50"} ${
-            winningTeam == 0 && "border-amber-500 border bg-amber-500/20"
-          }`}
+          className={`flex flex-col p-1 rounded ${getCompletedColor(
+            winningTeam,
+            1,
+            match.team1Score
+          )}`}
         >
           <span className="text-sm">{match.team1.player1.name}</span>
           <span className="text-sm">{match.team1.player2.name}</span>
@@ -42,11 +42,11 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
           <span className="h-fit">vs</span>
         </div>
         <div
-          className={`flex flex-col p-1 rounded ${
-            winningTeam == 2 && "border-green-400 border bg-green-800/50"
-          } ${winningTeam == 1 && "border-red-400 border bg-red-800/50"} ${
-            winningTeam == 0 && "border-amber-500 border bg-amber-500/20"
-          }`}
+          className={`flex flex-col p-1 rounded ${getCompletedColor(
+            winningTeam,
+            2,
+            match.team2Score
+          )}`}
         >
           <span className="text-sm">{match.team2.player1.name}</span>
           <span className="text-sm">{match.team2.player2.name}</span>
@@ -54,4 +54,34 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
       </div>
     </div>
   );
+};
+
+const getCompletedColor = (
+  winningTeam: number,
+  myTeam: number,
+  score: number
+) => {
+  let classColors = "";
+  const neutralColor = "border-green-400 border bg-green-800/50";
+  const winningColor = (score: number) => {
+    return score == 1
+      ? "border-amber-500 border bg-amber-500/20"
+      : neutralColor;
+  };
+  const losingColor = "border-red-400 border bg-red-800/50";
+  switch (winningTeam) {
+    case 1:
+      classColors = myTeam == 1 ? winningColor(score) : losingColor;
+      break;
+    case 2:
+      classColors = myTeam == 2 ? winningColor(score) : losingColor;
+      break;
+    case 0:
+      classColors = neutralColor;
+      break;
+    default:
+      break;
+  }
+
+  return classColors;
 };

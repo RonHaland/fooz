@@ -1,6 +1,7 @@
 ﻿using Azure.Data.Tables;
 using foozApi.Models;
 using foozApi.Storage.Entities;
+using System.Diagnostics;
 using System.Linq;
 
 namespace foozApi.Storage;
@@ -73,41 +74,52 @@ public class TableStorage
 
     public async Task<Models.Tournament?> GetTournament(string tournamentId)
     {
+        var sw = new Stopwatch();
+        sw.Start();
         var tournamentEntity = TournamentClient.Query<TournamentEntity>($"RowKey eq '{tournamentId}'").FirstOrDefault();
-        if  (tournamentEntity == null)
+        if (tournamentEntity == null)
         {
             return null;
             //Not found
         }
+        Console.WriteLine("1: {0}", sw.ElapsedMilliseconds);
 
-        var tournamentRoundTasks = Enumerable
-                            .Range(0, tournamentEntity.RoundCount)
-                            .Select(ind => RoundClient.GetEntityAsync<RoundEntity>(tournamentId, ind.ToString()));
-        var tournamentRoundEntities = (await Task.WhenAll(tournamentRoundTasks)).Select(a => a.Value);
+        var tournamentRoundEntities = RoundClient.Query<RoundEntity>($"PartitionKey eq '{tournamentId}'").ToList();
+        Console.WriteLine("2: {0}", sw.ElapsedMilliseconds);
 
         var matchAndTeamQuery = string.Join(" or ", tournamentRoundEntities.Select(r => $"PartitionKey eq '{tournamentId}_{r.RowKey}'"));
 
-        var matchEntities = MatchClient.Query<MatchEntity>(matchAndTeamQuery);
-        var teamEntities = TeamClient.Query<TeamEntity>(matchAndTeamQuery);
+        var matchEntities = MatchClient.Query<MatchEntity>(matchAndTeamQuery).ToList();
+        var teamEntities = TeamClient.Query<TeamEntity>(matchAndTeamQuery).ToList();
         var participantEntities = ParticipantClient.Query<ParticipantEntity>($"PartitionKey eq '{tournamentId}'");
+        Console.WriteLine("3: {0}", sw.ElapsedMilliseconds);
 
         var tournament = new Tournament(tournamentEntity);
         var participants = participantEntities.Select(p => new Participant(p)).ToList();
         var rounds = tournamentRoundEntities.Select(r => new Round(r, tournament)).ToList();
         var roundDictionary = rounds.ToDictionary(r => r.Id);
         var playerDictionary = participants.ToDictionary(p => p.Id.ToString());
+        Console.WriteLine("4: {0}", sw.ElapsedMilliseconds);
 
-        var teams = teamEntities.Select(t => new Team(t, roundDictionary, playerDictionary));
+        var teams = teamEntities.Select(t => new Team(t, roundDictionary, playerDictionary)).ToList();
+        Console.WriteLine("5: {0}", sw.ElapsedMilliseconds);
 
         var teamDictionary = teams.ToDictionary(t => t.Id.ToString());
+        Console.WriteLine("6: {0}", sw.ElapsedMilliseconds);
         var matches = matchEntities.Select(m => new Match(m, roundDictionary, teamDictionary)).ToList();
 
+        Console.WriteLine("7: {0}", sw.ElapsedMilliseconds);
         foreach (var round in rounds)
         {
-            var roundMatches = matches.Where(m => m.RoundId == round.Id).ToList();
-            var roundTeams = teams.Where(t => t.RoundId == round.Id).ToList();
+            var roundMatches = matches.Where(m => m.RoundId == round.Id);
+            var roundTeams = teams.Where(t => t.RoundId == round.Id);
             round.Matches = roundMatches.OrderBy(m => m.MatchNumber);
             round.Teams = roundTeams;
+        }
+        foreach (var team in teams)
+        {
+            team.HomeMatches = matches.Where(m => m.Team1.Id == team.Id);
+            team.AwayMatches = matches.Where(m => m.Team2.Id == team.Id);
         }
 
         tournament.Rounds = rounds.OrderBy(r => r.RoundNumber).ToList();
@@ -116,8 +128,7 @@ public class TableStorage
         {
             var playerTeams = teams
                 .Where(t => t.Player1.Id.Equals(player.Id)
-                        || t.Player2.Id.Equals(player.Id))
-                .ToList();
+                        || t.Player2.Id.Equals(player.Id));
             player.Teams = playerTeams;
         }
 
@@ -154,7 +165,7 @@ public class TableStorage
         var teamEntities = TeamClient.Query<TeamEntity>(teamQuery).ToList();
         var teams = teamEntities.Select(t => new Team(t, rounds, players)).ToDictionary(t => t.Id.ToString());
 
-        var matches = matchEntities.Select(m => new Match(m, rounds, teams));
+        var matches = matchEntities.Select(m => new Match(m, rounds, teams)).OrderBy(m => m.RoundNumber).ThenBy(m => m.MatchNumber);
 
 
         return matches.ToList();

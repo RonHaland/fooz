@@ -48,7 +48,7 @@ app.MapGet("/Tournament/{tournamentId}", async ([FromRoute] string tournamentId)
 
 app.MapGet("/Tournament/{tournamentId}/Matches", async ([FromRoute] string tournamentId) => 
 {
-    var result = await storageService.GetMatches(tournamentId);
+    var result = await storageService.GetMatchesAsync(tournamentId);
     if (result == null)
     {
         return Results.NotFound(result);
@@ -58,34 +58,24 @@ app.MapGet("/Tournament/{tournamentId}/Matches", async ([FromRoute] string tourn
 
 app.MapGet("/Tournament/{tournamentId}/CurrentMatch", async ([FromRoute] string tournamentId) =>
 {
-    var matches = await storageService.GetMatchesAsync(tournamentId);
-    if (matches == null)
+    var currentMatch = await tournamentService.GetCurrentMatch(tournamentId);
+    if (currentMatch == null)
     {
-        return Results.NotFound(matches);
+        return Results.NotFound(currentMatch);
     }
 
-    var matchList = matches.ToList();
-    var current = matches.FirstOrDefault(m => !m.IsCompleted);
-    if (current == null)
+    return Results.Ok(currentMatch);
+});
+
+app.MapGet("/Tournament/{tournamentId}/Matches/{matchId}", async ([FromRoute] string tournamentId, string matchId) =>
+{
+    var currentMatch = await tournamentService.GetCurrentMatch(tournamentId, matchId);
+    if (currentMatch == null)
     {
-        return Results.NoContent();
-    }
-    var currentInd = matchList.IndexOf(current);
-    var response = new CurrentMatchResponse
-    {
-        CurrentMatch = current,
-        PreviousMatch = currentInd switch
-        {
-            < 1 => null,
-            _ => matchList[currentInd - 1]
-        }
-    };
-    if (currentInd < matchList.Count)
-    {
-        response.NextMatch = matchList[currentInd+1];
+        return Results.NotFound(currentMatch);
     }
 
-    return Results.Ok(response);
+    return Results.Ok(currentMatch);
 });
 
 app.Run();

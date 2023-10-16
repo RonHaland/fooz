@@ -14,14 +14,14 @@ public class Participant
     {
         Id = Guid.Parse(entity.RowKey);
         Name = entity.Name;
-        Score = entity.Score;
         Weigth = entity.Weight;
     }
 
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = null!;
-    public int Score { get; set; } = 0;
+    public int Score => Teams.Sum(x => x.Score);
     public int Weigth { get; set; } = 5;
+    public int MatchCount => Teams.Sum(t => t.HomeMatches.Count() + t.AwayMatches.Count());
     [JsonIgnore]
     public Tournament Tournament { get; set; } = null!;
     [JsonIgnore]

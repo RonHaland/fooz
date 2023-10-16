@@ -40,7 +40,48 @@ public class TournamentService
         return tournament;
     }
 
-    public IEnumerable<Participant> CreateParticipants(IEnumerable<ParticipantDto> participants, Tournament tournament)
+    public async Task<CurrentMatchResponse?> GetCurrentMatch(string tournamentId, string? matchId = null)
+    {
+        var matches = await _tableStorage.GetMatchesAsync(tournamentId);
+        if (matches == null)
+        {
+            return null;
+        }
+
+        var matchList = matches.OrderBy(m => m.RoundNumber).ThenBy(m => m.MatchNumber).ToList();
+        Match? current;
+        if (matchId == null)
+        {
+            current = matches.FirstOrDefault(m => !m.IsCompleted);
+        }
+        else
+        {
+            current = matches.FirstOrDefault(m => m.Id.ToString() == matchId);
+        }
+
+        if (current == null)
+        {
+            return null;
+        }
+        var currentInd = matchList.IndexOf(current);
+        var response = new CurrentMatchResponse
+        {
+            CurrentMatch = current,
+            PreviousMatch = currentInd switch
+            {
+                < 1 => null,
+                _ => matchList[currentInd - 1]
+            }
+        };
+        if (currentInd < (matchList.Count - 1))
+        {
+            response.NextMatch = matchList[currentInd + 1];
+        }
+
+        return response;
+    }
+
+    private IEnumerable<Participant> CreateParticipants(IEnumerable<ParticipantDto> participants, Tournament tournament)
     {
         return participants.Select(p => new Participant
         {
@@ -51,7 +92,7 @@ public class TournamentService
         });
     }
 
-    public IEnumerable<Round> CreateRounds(int roundCount, IEnumerable<Participant> participants, Tournament tournament)
+    private IEnumerable<Round> CreateRounds(int roundCount, IEnumerable<Participant> participants, Tournament tournament)
     {
         var participantCount = participants.Count();
         if (participantCount % 2 == 0)
@@ -83,7 +124,7 @@ public class TournamentService
         return rounds;
     }
 
-    public Round CreateRound(int roundNumber, IEnumerable<Participant> participants, Tournament tournament)
+    private Round CreateRound(int roundNumber, IEnumerable<Participant> participants, Tournament tournament)
     {
         var participantList = participants
             .OrderBy(p => Random.Shared.Next(1000)).ToList();
@@ -114,7 +155,7 @@ public class TournamentService
         return round;
     }
 
-    public IEnumerable<Match> CreateMatches(Round round, IEnumerable<Team> teams)
+    private IEnumerable<Match> CreateMatches(Round round, IEnumerable<Team> teams)
     {
         var matchTeams = teams.ToList();
         var teamCount = matchTeams.Count;
