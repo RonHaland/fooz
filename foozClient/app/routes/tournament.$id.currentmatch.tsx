@@ -2,29 +2,42 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { Form, useLoaderData, useParams } from "@remix-run/react";
-import type { CurrentMatch, Team } from "~/_types/tournament";
+import type { CurrentMatch, PutMatch, WinType } from "~/_types/tournament";
 import {
   ActionButton,
   ImageHeader,
   LinkButton,
+  TeamDisplay,
   TournamentNavBar,
 } from "~/components";
+import { usePostTimerUpdates } from "~/hooks/usePostTimerUpdates";
 import { useTimer } from "~/hooks/useTimer";
 
 export const meta: MetaFunction = () => [{ title: "Matches" }];
 
 const MatchesPage = () => {
-  const { current } = useLoaderData<typeof loader>();
+  const { current, apiUrl } = useLoaderData<typeof loader>();
   const { id } = useParams();
   const { timeLeft, isStarted, isPaused, toggleStarted, togglePause } =
     useTimer(360);
 
+  const { setUpdate } = usePostTimerUpdates(apiUrl, id ?? "");
+
+  const start = () => {
+    setUpdate({ timerUpdate: "Start" });
+    toggleStarted();
+  };
+  const stop = () => {
+    setUpdate({ timerUpdate: "Stop" });
+    toggleStarted();
+  };
+
   const toggleTimerButton = isStarted ? (
-    <ActionButton onClick={toggleStarted} colorCode="Alert">
+    <ActionButton onClick={stop} colorCode="Alert">
       stop
     </ActionButton>
   ) : (
-    <ActionButton onClick={toggleStarted} colorCode="Primary">
+    <ActionButton onClick={start} colorCode="Primary">
       start
     </ActionButton>
   );
@@ -105,52 +118,6 @@ const MatchesPage = () => {
 };
 export default MatchesPage;
 
-const TeamDisplay = ({
-  team,
-  align = "left",
-  matchId,
-}: {
-  team?: Team;
-  align?: "left" | "right";
-  matchId?: string;
-}) => {
-  const leftAligned = align == "left";
-  return (
-    <div className="flex flex-row items-center gap-4">
-      <div className={`order-2 ${leftAligned ? `text-left` : "text-right"}`}>
-        {!!team && (
-          <>
-            <h3 className="text-lg">{team.player1.name}</h3>
-            <h3 className="text-lg">{team.player2.name}</h3>
-          </>
-        )}
-      </div>
-      <div
-        className={`${
-          leftAligned ? "order-1 items-end" : "order-3"
-        } flex flex-col gap-2`}
-      >
-        <Form
-          method="POST"
-          action={`?type=10&teamId=${team?.id}&matchId=${matchId}`}
-        >
-          <ActionButton submit colorCode="Success">
-            Score Win
-          </ActionButton>
-        </Form>
-        <Form
-          method="POST"
-          action={`?type=time&teamId=${team?.id}&matchId=${matchId}`}
-        >
-          <ActionButton submit colorCode="Warning">
-            Time Win
-          </ActionButton>
-        </Form>
-      </div>
-    </div>
-  );
-};
-
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const tournamentId = params["id"];
@@ -160,19 +127,38 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       `${apiUrl}/tournament/${tournamentId}/CurrentMatch`
     );
     current = await matchResult.json();
-    return json({ current });
   } catch (error) {
     console.log(error);
-    return json({ current });
   }
+  return json({ current, apiUrl });
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const url = new URL(request.url);
   const searchParams = url.searchParams;
-  const type = searchParams.get("type");
+  const tournamentId = params["id"];
+  const type = searchParams.get("type") as WinType;
   const teamId = searchParams.get("teamId");
   const matchId = searchParams.get("matchId");
+
+  const apiUrl = process.env.API_URL ?? "";
+
+  const data = {
+    winningTeam: Number.parseInt(teamId ?? "0"),
+    winType: type,
+  } as PutMatch;
+  const result = await fetch(
+    `${apiUrl}/Tournament/${tournamentId}/Matches/${matchId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
+  console.log(result);
+
   console.log({ type, teamId, matchId });
   return json({});
 };

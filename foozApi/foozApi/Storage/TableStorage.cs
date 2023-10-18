@@ -1,4 +1,5 @@
 ﻿using Azure.Data.Tables;
+using foozApi.DTO;
 using foozApi.Models;
 using foozApi.Storage.Entities;
 using System.Diagnostics;
@@ -169,5 +170,41 @@ public class TableStorage
 
 
         return matches.ToList();
+    }
+
+    public TournamentsResponse[]? GetTournamentsList()
+    {
+        var tournamentEntities = TournamentClient
+            .Query<TournamentEntity>("PartitionKey gt '0'")
+            .OrderByDescending(t => t.Timestamp)
+            .Take(100)
+            .ToList();
+        if (tournamentEntities == null || !tournamentEntities.Any())
+        {
+            return null;
+        }
+
+        var response = tournamentEntities.Select(te => new TournamentsResponse
+        {
+            Name = te.Name,
+            Id = te.RowKey,
+            Time = te.Timestamp ?? DateTimeOffset.UtcNow,
+        }).ToArray();
+
+        return response;
+    }
+
+    public async Task UpdateMatchScore(string tournamentId, string matchId, int team1Score, int team2Score)
+    {
+        var MatchQuery = $"PartitionKey ge '{tournamentId}' and PartitionKey lt '{tournamentId}a' and RowKey eq '{matchId}'";
+        var existingMatch = MatchClient.Query<MatchEntity>(MatchQuery).FirstOrDefault();
+        if (existingMatch == null)
+        {
+            return;
+        }
+        existingMatch.Team1Score = team1Score;
+        existingMatch.Team2Score = team2Score;
+        existingMatch.IsCompleted = true;
+        await MatchClient.UpdateEntityAsync(existingMatch, existingMatch.ETag);
     }
 }

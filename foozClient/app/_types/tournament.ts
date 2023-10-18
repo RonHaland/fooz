@@ -6,6 +6,12 @@ export type Tournament = {
   rounds: Round[];
 }
 
+export type TournamentListItem = {
+  name: string;
+  id: string;
+  time: Date;
+}
+
 export type Round = {
   roundNumber: number;
   isCompleted: boolean;
@@ -44,3 +50,10 @@ export type CurrentMatch = {
   previousMatch?: Match;
   nextMatch?: Match;
 }
+
+export type PutMatch = {
+    winningTeam: number;
+    winType: WinType;
+}
+
+export type WinType = "draw" | "time" | "score";

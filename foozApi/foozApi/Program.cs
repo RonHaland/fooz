@@ -1,8 +1,8 @@
-using foozApi.DTO;
+using foozApi.Endpoints;
 using foozApi.Services;
 using foozApi.Storage;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 builder.Services.AddSingleton<TableStorage>();
 builder.Services.AddSingleton<TournamentService>();
+builder.Services.AddSingleton<LiveUpdateService>();
+
+builder.Services.Configure<JsonOptions>(opt =>
+{
+    opt.SerializerOptions.PropertyNameCaseInsensitive = false; 
+    var converter = new JsonStringEnumConverter();
+    opt.SerializerOptions.Converters.Add(converter);
+});
 
 var app = builder.Build();
 
@@ -24,58 +33,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseWebSockets();
 
-var storageService = app.Services.GetRequiredService<TableStorage>();
-var tournamentService = app.Services.GetRequiredService<TournamentService>();
 
-app.MapPost("/Tournament", async ([FromBody] PostTournament body) =>
-{
-    return await tournamentService.CreateTournament(body);
-})
-.WithName("PostTournament")
-.WithOpenApi();
+app.AddMatchEndpoints();
+app.AddTournamentEndpoints();
+app.AddLiveEndpoints();
 
-app.MapGet("/Tournament/{tournamentId}", async ([FromRoute] string tournamentId) =>
-{
-    var result = await storageService.GetTournament(tournamentId);
-    if (result == null)
-    {
-        return Results.NotFound();
-    }
-    return Results.Ok(result);
-})
-.WithName("Get Tournament");
+app.UseCors(c => c.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());
 
-app.MapGet("/Tournament/{tournamentId}/Matches", async ([FromRoute] string tournamentId) => 
-{
-    var result = await storageService.GetMatchesAsync(tournamentId);
-    if (result == null)
-    {
-        return Results.NotFound(result);
-    }
-    return Results.Ok(result);
-});
-
-app.MapGet("/Tournament/{tournamentId}/CurrentMatch", async ([FromRoute] string tournamentId) =>
-{
-    var currentMatch = await tournamentService.GetCurrentMatch(tournamentId);
-    if (currentMatch == null)
-    {
-        return Results.NotFound(currentMatch);
-    }
-
-    return Results.Ok(currentMatch);
-});
-
-app.MapGet("/Tournament/{tournamentId}/Matches/{matchId}", async ([FromRoute] string tournamentId, string matchId) =>
-{
-    var currentMatch = await tournamentService.GetCurrentMatch(tournamentId, matchId);
-    if (currentMatch == null)
-    {
-        return Results.NotFound(currentMatch);
-    }
-
-    return Results.Ok(currentMatch);
-});
 
 app.Run();

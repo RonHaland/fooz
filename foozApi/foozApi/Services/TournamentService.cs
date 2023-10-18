@@ -8,10 +8,12 @@ namespace foozApi.Services;
 public class TournamentService
 {
     private readonly TableStorage _tableStorage;
+    private readonly LiveUpdateService _liveUpdater;
 
-    public TournamentService(TableStorage tableStorage)
+    public TournamentService(TableStorage tableStorage, LiveUpdateService liveUpdater)
 	{
         _tableStorage = tableStorage;
+        _liveUpdater = liveUpdater;
     }
 
     public async Task<Tournament> CreateTournament(PostTournament postTournament)
@@ -79,6 +81,35 @@ public class TournamentService
         }
 
         return response;
+    }
+
+    public async Task<TournamentsResponse[]?> GetTournaments()
+    {
+        return _tableStorage.GetTournamentsList();
+    }
+
+    public async Task UpdateMatchScore(PutMatch putMatch, string tournamentId, string matchId)
+    {
+        if ((putMatch.WinningTeam < 1 ||  putMatch.WinningTeam > 2) && putMatch.WinType != WinType.Draw) 
+        { 
+            return; 
+        }
+
+        var team1Score = 0;
+        var team2Score = 0;
+        switch (putMatch.WinType) 
+        {
+            case WinType.Draw:
+                team1Score = 1;
+                team2Score = 1;
+                break;
+            default:
+                team1Score = (putMatch.WinningTeam == 1 ? (int)putMatch.WinType : 0);
+                team2Score = (putMatch.WinningTeam == 2 ? (int)putMatch.WinType : 0);
+                break;
+        }
+        await _tableStorage.UpdateMatchScore(tournamentId, matchId, team1Score, team2Score);
+        await _liveUpdater.SendUpdate(tournamentId);
     }
 
     private IEnumerable<Participant> CreateParticipants(IEnumerable<ParticipantDto> participants, Tournament tournament)
