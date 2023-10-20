@@ -1,1 +1,7 @@
 # fooz
+
+## API
+
+## Client
+
+## Auth

@@ -1,8 +1,8 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import type { CurrentMatch, Tournament } from "~/_types/tournament";
-import { Scoreboard, TeamDisplay } from "~/components";
+import { MatchCard, Scoreboard, TeamDisplay } from "~/components";
 import { ScoreRow } from "~/components/Scoreboard/ScoreRow";
 import { useTimer } from "~/hooks";
 import { useWebSocket } from "~/hooks/useWebSocket";
@@ -93,7 +93,7 @@ const LivePage = () => {
   }, []);
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className="container mx-auto pt-20 h-full">
       <div className="flex flex-col text-slate-200">
         <h1 className="text-4xl text-center font-semibold">
           {tournament?.name}
@@ -102,8 +102,12 @@ const LivePage = () => {
           ROUND {(currentMatch?.currentMatch.roundNumber ?? 0) + 1} - MATCH{" "}
           {(currentMatch?.currentMatch.matchNumber ?? 0) + 1}
         </h2>
-        <div className="grid grid-cols-1 grid-row-2 md:grid-cols-3 mt-8 gap-8">
-          <div className="flex justify-center gap-24 md:col-span-2">
+        <div className="grid grid-cols-2 grid-row-5 md:grid-cols-3 mt-16 gap-8">
+          <div className="p-4 rounded bg-slate-800 border border-slate-200/20 h-fit row-span-2 row-start-4 col-start-1 md:row-start-1 col-span-2 md:col-span-1">
+            <h2 className="text-center text-lg">Scores</h2>
+            <Scoreboard>{players}</Scoreboard>
+          </div>
+          <div className="flex justify-center gap-24 col-span-2 md:col-span-1">
             <TeamDisplay
               team={currentMatch?.currentMatch.team1}
               matchId={currentMatch?.currentMatch.id}
@@ -117,13 +121,21 @@ const LivePage = () => {
               align="right"
             />
           </div>
-          <h2 className="text-4xl text-center">
+          <h2 className="text-4xl text-center col-span-2 md:col-span-1">
             {timeLeft < 0 ? "OVERTIMER: " : "TIMER: "} <br />
             {timeLeft < 0 ? (timeLeft + 120).toFixed(0) : timeLeft.toFixed(0)}
           </h2>
-          <div className="p-4 rounded bg-slate-800 border border-slate-200/50 h-fit">
-            <h2 className="text-center text-lg">Scores</h2>
-            <Scoreboard>{players}</Scoreboard>
+          <div>
+            <h2>Previous Game</h2>
+            {currentMatch?.previousMatch && (
+              <MatchCard match={currentMatch?.previousMatch} />
+            )}
+          </div>
+          <div>
+            <h2>Next Game</h2>
+            {currentMatch?.nextMatch && (
+              <MatchCard match={currentMatch?.nextMatch} />
+            )}
           </div>
         </div>
       </div>
@@ -156,4 +168,16 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   }
 
   return { wsConnectionEndpoint, tournament, currentMatch };
+};
+
+export const meta: MetaFunction = ({ matches, data }) => {
+  const loaderData = data as Awaited<ReturnType<typeof loader>>;
+
+  const currentMatch = loaderData.currentMatch?.currentMatch;
+  const title = currentMatch
+    ? `Round ${(currentMatch?.roundNumber ?? 0) + 1} - Match ${
+        (currentMatch?.matchNumber ?? 0) + 1
+      }`
+    : "Live match";
+  return [{ title }];
 };

@@ -62,11 +62,9 @@ const getCompletedColor = (
   score: number
 ) => {
   let classColors = "";
-  const neutralColor = "border-green-400 border bg-green-800/50";
+  const neutralColor = "border-amber-500 border bg-amber-500/20";
   const winningColor = (score: number) => {
-    return score == 1
-      ? "border-amber-500 border bg-amber-500/20"
-      : neutralColor;
+    return score > 1 ? "border-green-400 border bg-green-800/50" : neutralColor;
   };
   const losingColor = "border-red-400 border bg-red-800/50";
   switch (winningTeam) {

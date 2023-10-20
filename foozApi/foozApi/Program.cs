@@ -1,3 +1,4 @@
+using Discord.Rest;
 using foozApi.Endpoints;
 using foozApi.Services;
 using foozApi.Storage;
@@ -15,6 +16,7 @@ builder.Services.AddCors();
 builder.Services.AddSingleton<TableStorage>();
 builder.Services.AddSingleton<TournamentService>();
 builder.Services.AddSingleton<LiveUpdateService>();
+builder.Services.AddSingleton<UserService>();
 
 builder.Services.Configure<JsonOptions>(opt =>
 {
@@ -39,6 +41,8 @@ app.UseWebSockets();
 app.AddMatchEndpoints();
 app.AddTournamentEndpoints();
 app.AddLiveEndpoints();
+app.AddUserEndpoints();
+
 
 app.UseCors(c => c.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());
 

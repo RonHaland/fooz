@@ -195,9 +195,9 @@ public class TournamentService
 
         if (teamCount % 2 == 0)
         {
+            var matchNumber = 0;
             foreach (var ind in Enumerable.Range(0, subRoundCount))
             {
-                var matchNumber = 0;
                 var newMatches = teams.Shift(3 * ind).Select((sr, i) => i % 2 == 0
                 ? new Match
                 {

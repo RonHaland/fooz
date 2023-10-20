@@ -22,6 +22,7 @@ public class Participant
     public int Score => Teams.Sum(x => x.Score);
     public int Weigth { get; set; } = 5;
     public int MatchCount => Teams.Sum(t => t.HomeMatches.Count() + t.AwayMatches.Count());
+    public int MatchesPlayed => Teams.Sum(t => t.HomeMatches.Count(hm => hm.IsCompleted) + t.AwayMatches.Count(am => am.IsCompleted));
     [JsonIgnore]
     public Tournament Tournament { get; set; } = null!;
     [JsonIgnore]

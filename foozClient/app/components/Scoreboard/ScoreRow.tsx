@@ -11,7 +11,9 @@ export const ScoreRow = ({ player, ind }: Props) => {
       <td>{ind}</td>
       <td>{player?.name}</td>
       <td>{player?.score}</td>
-      <td>{player?.matchCount}</td>
+      <td>
+        {player?.matchesPlayed}/{player?.matchCount}
+      </td>
     </tr>
   );
 };

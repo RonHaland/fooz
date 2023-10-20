@@ -43,6 +43,7 @@ export type Player = {
   name: string;
   score: 0;
   matchCount: number;
+  matchesPlayed: number;
 }
 
 export type CurrentMatch = {
