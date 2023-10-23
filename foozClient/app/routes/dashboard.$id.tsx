@@ -12,7 +12,7 @@ const TournamentDashboardPage = () => {
     <ScoreRow key={p.id} player={p} ind={i + 1} />
   ));
   return (
-    <div className="flex flex-col gap-8 pt-4 justify-center items-center">
+    <div className="flex flex-col gap-8 pt-4 justify-center items-center container mx-auto">
       <h2 className="text-center text-2xl text-slate-200">
         {tournament?.name}
       </h2>
@@ -24,7 +24,7 @@ const TournamentDashboardPage = () => {
           Edit other match
         </LinkButton>
       </div>
-      <div className="col-span-2">
+      <div className="col-span-2 rounded-lg p-4 mx-4 sm:mx-8 bg-sky-950">
         <Scoreboard>{scores}</Scoreboard>
       </div>
     </div>

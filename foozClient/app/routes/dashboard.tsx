@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, Outlet } from "@remix-run/react";
 import { ActionButton } from "~/components";
@@ -27,6 +27,10 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Dashboard" }];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const token = GetTokenFromRequest(request);

@@ -19,6 +19,9 @@ export default function Index() {
         <LinkButton href="/tournament" colorCode="Secondary">
           Tournaments
         </LinkButton>
+        <LinkButton href="/dashboard" colorCode="Secondary">
+          Dashboard
+        </LinkButton>
       </div>
     </div>
   );

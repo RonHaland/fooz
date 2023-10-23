@@ -1,17 +1,17 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { TournamentListItem } from "~/_types/tournament";
-import { LinkButton } from "~/components";
+import { TournamentList } from "~/components/TournamentList";
 
 const TournamentPage = () => {
   const { tournaments } = useLoaderData<typeof loader>();
 
-  const buttons = tournaments.map((t) => (
-    <LinkButton key={t.time} href={`/Tournament/${t.id}`}>
-      {t.name}
-    </LinkButton>
-  ));
-  return <>{buttons}</>;
+  const tournamentItems = tournaments as any as TournamentListItem[];
+  return (
+    <div>
+      <TournamentList tournaments={tournamentItems} manage={false} />
+    </div>
+  );
 };
 
 export default TournamentPage;
