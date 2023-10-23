@@ -7,7 +7,7 @@ const LoginPage = () => {
     <div className="grid place-content-center place-items-center h-screen -mt-1 grid-rows-2 ">
       <div className="flex flex-col gap-20 rounded-xl p-16 pt-24 shadow-2xl shadow-black">
         <div className="flex flex-col items-center gap-2">
-          <span className="text-center text-amber-400 text-6xl">
+          <span className="text-center text-amber-400 text-6xl ">
             <FaKey />
           </span>
           <h1 className="text-4xl text-slate-200 text-center">Login</h1>

@@ -1,17 +1,18 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
-import { Form, useLoaderData, useParams } from "@remix-run/react";
-import type { CurrentMatch, PutMatch, WinType } from "~/_types/tournament";
+import { useLoaderData, useParams } from "@remix-run/react";
+import type { CurrentMatch } from "~/_types/tournament";
 import {
   ActionButton,
   ImageHeader,
   LinkButton,
-  TeamDisplay,
   TournamentNavBar,
 } from "~/components";
+import { MatchInfo } from "~/components/MatchInfo";
 import { usePostTimerUpdates } from "~/hooks/usePostTimerUpdates";
 import { useTimer } from "~/hooks/useTimer";
+import { GetTokenFromRequest } from "~/utils/token.server";
 
 export const meta: MetaFunction = () => [{ title: "Matches" }];
 
@@ -79,28 +80,7 @@ const MatchesPage = () => {
             Round {(current?.currentMatch.roundNumber ?? 0) + 1} - Match{" "}
             {(current?.currentMatch.matchNumber ?? 0) + 1}
           </h2>
-          <div className="flex justify-between my-8 gap-24">
-            <TeamDisplay
-              team={current?.currentMatch.team1}
-              matchId={current?.currentMatch.id}
-            />
-            <div className="flex flex-col justify-around items-center mt-6 gap-2">
-              <span className="h-fit">VS</span>
-              <Form
-                method="POST"
-                action={`?type=draw&matchId=${current?.currentMatch.id}`}
-              >
-                <ActionButton submit colorCode="Warning">
-                  draw
-                </ActionButton>
-              </Form>
-            </div>
-            <TeamDisplay
-              team={current?.currentMatch.team2}
-              matchId={current?.currentMatch.id}
-              align="right"
-            />
-          </div>
+          <MatchInfo currentMatch={current?.currentMatch ?? ({} as any)} />
           <div className="my-8">
             <h2 className="text-center text-5xl">
               {timeLeft < 0 ? "OVERTIMER: " : "TIMER: "} <br />
@@ -131,34 +111,4 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     console.log(error);
   }
   return json({ current, apiUrl });
-};
-
-export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const url = new URL(request.url);
-  const searchParams = url.searchParams;
-  const tournamentId = params["id"];
-  const type = searchParams.get("type") as WinType;
-  const teamId = searchParams.get("teamId");
-  const matchId = searchParams.get("matchId");
-
-  const apiUrl = process.env.API_URL ?? "";
-
-  const data = {
-    winningTeam: Number.parseInt(teamId ?? "0"),
-    winType: type,
-  } as PutMatch;
-  const result = await fetch(
-    `${apiUrl}/Tournament/${tournamentId}/Matches/${matchId}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    }
-  );
-  console.log(result);
-
-  console.log({ type, teamId, matchId });
-  return json({});
 };
