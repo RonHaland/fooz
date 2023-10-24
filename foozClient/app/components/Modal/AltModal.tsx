@@ -38,7 +38,7 @@ export const AltModal = forwardRef<HTMLDialogElement, Props>(function Modal(
         <div className="px-6">{children}</div>
       </div>
       <div
-        className="fixed inset-0 bg-gradient-to-bl bg-fuchsia-700/10 -z-10 from-fuchsia-700/20 to-indigo-500/10"
+        className="fixed inset-0 bg-gradient-to-bl -z-10 from-fuchsia-700/5 to-indigo-500/10 opacity-30"
         onClick={close}
       ></div>
     </dialog>

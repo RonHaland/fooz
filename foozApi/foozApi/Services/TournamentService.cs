@@ -50,6 +50,7 @@ public class TournamentService
             return null;
         }
 
+        var isCompleted = false;
         var matchList = matches.OrderBy(m => m.RoundNumber).ThenBy(m => m.MatchNumber).ToList();
         Match? current;
         if (matchId == null)
@@ -63,7 +64,11 @@ public class TournamentService
 
         if (current == null)
         {
-            return null;
+            if (!matches.All(m => m.IsCompleted))
+            {
+                return null;
+            }
+            isCompleted = true;
         }
         var currentInd = matchList.IndexOf(current);
         var response = new CurrentMatchResponse
@@ -71,14 +76,16 @@ public class TournamentService
             CurrentMatch = current,
             PreviousMatch = currentInd switch
             {
+                < 0 => matchList[matchList.Count - 1],
                 < 1 => null,
                 _ => matchList[currentInd - 1]
             }
         };
-        if (currentInd < (matchList.Count - 1))
+        if (currentInd < (matchList.Count - 1) && currentInd >= 0)
         {
             response.NextMatch = matchList[currentInd + 1];
         }
+        response.IsComplete = isCompleted;
 
         return response;
     }

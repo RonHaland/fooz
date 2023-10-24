@@ -8,9 +8,11 @@ import { GetTokenFromRequest } from "~/utils/token.server";
 const DashboardPage = () => {
   return (
     <div className="flex flex-col">
-      <header className="bg-zinc-950/30  shadow-black/30 shadow p-8 flex flex-row justify-between">
+      <header className="bg-zinc-950/30  shadow-black/30 shadow p-4 sm:p-8 flex flex-row justify-between items-center">
         <Link to={"/dashboard"}>
-          <h1 className="text-4xl text-slate-300 font-medium">DASHBOARD</h1>
+          <h1 className="text-2xl sm:text-4xl text-slate-300 font-medium">
+            DASHBOARD
+          </h1>
         </Link>
         <div></div>
         <Form method="POST" action="/logout">

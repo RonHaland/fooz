@@ -3,54 +3,16 @@ import { json } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { useLoaderData, useParams } from "@remix-run/react";
 import type { CurrentMatch } from "~/_types/tournament";
-import {
-  ActionButton,
-  ImageHeader,
-  LinkButton,
-  TournamentNavBar,
-} from "~/components";
+import { ImageHeader, LinkButton, TournamentNavBar } from "~/components";
 import { MatchInfo } from "~/components/MatchInfo";
-import { usePostTimerUpdates } from "~/hooks/usePostTimerUpdates";
-import { useTimer } from "~/hooks/useTimer";
-import { GetTokenFromRequest } from "~/utils/token.server";
 
 export const meta: MetaFunction = () => [{ title: "Matches" }];
 
 const MatchesPage = () => {
-  const { current, apiUrl } = useLoaderData<typeof loader>();
+  const { current } = useLoaderData<typeof loader>();
   const { id } = useParams();
-  const { timeLeft, isStarted, isPaused, toggleStarted, togglePause } =
-    useTimer(360);
 
-  const { setUpdate } = usePostTimerUpdates(apiUrl, id ?? "");
-
-  const start = () => {
-    setUpdate({ timerUpdate: "Start" });
-    toggleStarted();
-  };
-  const stop = () => {
-    setUpdate({ timerUpdate: "Stop" });
-    toggleStarted();
-  };
-
-  const toggleTimerButton = isStarted ? (
-    <ActionButton onClick={stop} colorCode="Alert">
-      stop
-    </ActionButton>
-  ) : (
-    <ActionButton onClick={start} colorCode="Primary">
-      start
-    </ActionButton>
-  );
-  const togglePauseButton = isPaused ? (
-    <ActionButton onClick={togglePause} colorCode="Info">
-      unpause
-    </ActionButton>
-  ) : (
-    <ActionButton onClick={togglePause} colorCode="Info">
-      pause
-    </ActionButton>
-  );
+  const currentMatchItem = current?.currentMatch;
 
   return (
     <div className="container mx-auto">
@@ -74,24 +36,18 @@ const MatchesPage = () => {
         )}
       </TournamentNavBar>
       <div className="flex flex-row justify-center">
-        <div className="flex flex-col">
-          <h2 className="text-6xl text-center">
-            {" "}
-            Round {(current?.currentMatch.roundNumber ?? 0) + 1} - Match{" "}
-            {(current?.currentMatch.matchNumber ?? 0) + 1}
-          </h2>
-          <MatchInfo currentMatch={current?.currentMatch ?? ({} as any)} />
-          <div className="my-8">
-            <h2 className="text-center text-5xl">
-              {timeLeft < 0 ? "OVERTIMER: " : "TIMER: "} <br />
-              {timeLeft < 0 ? (timeLeft + 120).toFixed(0) : timeLeft.toFixed(0)}
+        {currentMatchItem ? (
+          <div className="flex flex-col">
+            <h2 className="text-6xl text-center">
+              {" "}
+              Round {(currentMatchItem.roundNumber ?? 0) + 1} - Match{" "}
+              {(currentMatchItem.matchNumber ?? 0) + 1}
             </h2>
-            <div className="flex justify-center gap-2 my-6">
-              {toggleTimerButton}
-              {!!isStarted && togglePauseButton}
-            </div>
+            <MatchInfo currentMatch={currentMatchItem} />
           </div>
-        </div>
+        ) : (
+          <h2 className="text-4xl text-slate-200 my-12">COMPLETED</h2>
+        )}
       </div>
     </div>
   );

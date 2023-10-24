@@ -5,6 +5,7 @@ type Props = {
   submit?: boolean;
   children?: any;
   disabled?: boolean;
+  className?: string;
   colorCode?:
     | "Primary"
     | "Secondary"
@@ -18,9 +19,10 @@ export const ActionButton = ({
   children,
   colorCode = "Primary",
   disabled,
+  className,
   submit = false,
 }: Props) => {
-  let className = useButtonStyles(colorCode, disabled);
+  className = `${useButtonStyles(colorCode, disabled)} ${className}`;
   return (
     <button
       onClick={onClick}

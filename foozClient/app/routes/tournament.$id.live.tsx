@@ -29,6 +29,8 @@ const LivePage = () => {
     .sort((a, b) => b.score - a.score)
     .map((p, i) => <ScoreRow key={p.id} player={p} ind={i + 1} />);
 
+  const currentMatchItem = currentMatch?.currentMatch;
+
   useEffect(
     function handleTimerUpdate() {
       if (timerUpdate) {
@@ -98,29 +100,39 @@ const LivePage = () => {
         <h1 className="text-4xl text-center font-semibold">
           {tournament?.name}
         </h1>
-        <h2 className="text-2xl text-center">
-          ROUND {(currentMatch?.currentMatch.roundNumber ?? 0) + 1} - MATCH{" "}
-          {(currentMatch?.currentMatch.matchNumber ?? 0) + 1}
-        </h2>
+        {currentMatchItem && (
+          <h2 className="text-2xl text-center">
+            ROUND {(currentMatchItem.roundNumber ?? 0) + 1} - MATCH{" "}
+            {(currentMatchItem.matchNumber ?? 0) + 1}
+          </h2>
+        )}
         <div className="grid grid-cols-2 grid-row-5 md:grid-cols-3 mt-16 gap-8">
           <div className="p-4 rounded bg-slate-800 border border-slate-200/20 h-fit row-span-2 row-start-4 col-start-1 md:row-start-1 col-span-2 md:col-span-1">
             <h2 className="text-center text-lg">Scores</h2>
             <Scoreboard>{players}</Scoreboard>
           </div>
-          <div className="flex justify-center gap-24 col-span-2 md:col-span-1">
-            <TeamDisplay
-              team={currentMatch?.currentMatch.team1}
-              matchId={currentMatch?.currentMatch.id}
-            />
-            <div className="flex flex-col justify-around items-center mt-6 gap-2">
-              <span className="h-fit">VS</span>
+          {currentMatchItem ? (
+            <div className="flex justify-center gap-24 col-span-2 md:col-span-1">
+              <TeamDisplay
+                team={currentMatchItem.team1}
+                matchId={currentMatchItem.id}
+              />
+              <div className="flex flex-col justify-around items-center mt-6 gap-2">
+                <span className="h-fit">VS</span>
+              </div>
+              <TeamDisplay
+                team={currentMatchItem.team2}
+                matchId={currentMatchItem.id}
+                align="right"
+              />
             </div>
-            <TeamDisplay
-              team={currentMatch?.currentMatch.team2}
-              matchId={currentMatch?.currentMatch.id}
-              align="right"
-            />
-          </div>
+          ) : (
+            <div className="flex justify-center">
+              <span className="text-4xl text-center ">
+                ALL MATCHES COMPLETE
+              </span>
+            </div>
+          )}
           <h2 className="text-4xl text-center col-span-2 md:col-span-1">
             {timeLeft < 0 ? "OVERTIMER: " : "TIMER: "} <br />
             {timeLeft < 0 ? (timeLeft + 120).toFixed(0) : timeLeft.toFixed(0)}
