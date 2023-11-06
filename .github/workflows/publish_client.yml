@@ -1,4 +1,4 @@
-name: Build remix container
+name: Build & publish client image
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ env:
 
 jobs:
   compare:
-    uses: ./.github/workflows/compare.yml
+    uses: ./.github/workflows/compare_package_json.yml
     secrets: inherit
 
   build:

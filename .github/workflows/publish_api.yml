@@ -1,4 +1,4 @@
-name: Build dotnet container
+name: Build & publish api image
 
 on:
   workflow_dispatch:
