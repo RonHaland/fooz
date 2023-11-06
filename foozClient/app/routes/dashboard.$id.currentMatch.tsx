@@ -5,9 +5,7 @@ import { createRef, useState } from "react";
 import type { CurrentMatch, PutMatch, WinType } from "~/_types";
 import { ActionButton } from "~/components";
 import { MatchInfo } from "~/components/MatchInfo";
-import { Modal } from "~/components/Modal";
 import { AltModal } from "~/components/Modal/AltModal";
-import { InfoBox } from "~/components/Modal/InfoBox";
 import { usePostTimerUpdates } from "~/hooks";
 import { auth } from "~/utils/auth.server";
 import { GetTokenFromRequest } from "~/utils/token.server";
@@ -18,10 +16,11 @@ const CurrentMatchDashboardPage = () => {
   const { setUpdate } = usePostTimerUpdates(id ?? "");
   const [isPaused, setIsPaused] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  //const [isEditOTOpen, setIsEditOTOpen] = useState(false);
+  const [editTimerValue, setEditTimerValue] = useState(360);
+  const [editOverTimerValue, setEditOverTimerValue] = useState(360);
 
   const editModalRef = createRef<HTMLDialogElement>();
+  const editModal2Ref = createRef<HTMLDialogElement>();
   const currentMatch = current?.currentMatch;
 
   const startTimer = () => {
@@ -45,6 +44,16 @@ const CurrentMatchDashboardPage = () => {
   };
   const editOverTimer = (seconds: number) => {
     setUpdate({ timerUpdate: "EditOvertime", amount: seconds });
+  };
+  const minMaxValue = (value: number, min: number = 0, max: number = 3600) =>
+    Math.min(max, Math.max(value, min));
+  const handleTimerEdit = () => {
+    editTimer(minMaxValue(editTimerValue));
+    editModalRef.current?.close();
+  };
+  const handleOverTimerEdit = () => {
+    editOverTimer(minMaxValue(editOverTimerValue));
+    editModal2Ref.current?.close();
   };
 
   const startStopButton = (
@@ -103,23 +112,17 @@ const CurrentMatchDashboardPage = () => {
             <div className="grid grid-cols-2 grid-rows-2 place-items-stretch gap-4">
               {startStopButton}
               {pauseButton}
-              <ActionButton onClick={() => setIsEditOpen(true)}>
+              <ActionButton onClick={() => editModalRef.current?.showModal()}>
                 Edit
               </ActionButton>
-              <ActionButton onClick={() => editModalRef.current?.showModal()}>
+              <ActionButton onClick={() => editModal2Ref.current?.showModal()}>
                 Edit OT
               </ActionButton>
             </div>
           </div>
           <div className="w-fit grid grid-cols-5 text-center text-lg text-slate-100 p-4 gap-2">
-            <h3 className="col-span-2">
-              Team 1: {currentMatch.team1.player1.name} -{" "}
-              {currentMatch.team1.player2.name}
-            </h3>
-            <h3 className="col-span-2 col-start-4">
-              Team 2: {currentMatch.team2.player1.name} -{" "}
-              {currentMatch.team2.player2.name}
-            </h3>
+            <h3 className="col-span-2">Team 1</h3>
+            <h3 className="col-span-2 col-start-4">Team 2</h3>
             <div className="col-start-1">
               <Form
                 method="POST"
@@ -175,10 +178,34 @@ const CurrentMatchDashboardPage = () => {
           </div>
         </div>
       )}
-      <InfoBox open={isEditOpen} setOpen={setIsEditOpen}>
-        MODAL 1
-      </InfoBox>
-      <AltModal ref={editModalRef}>MODAL 2</AltModal>
+      <AltModal ref={editModalRef}>
+        <div className="flex flex-col gap-4">
+          <input
+            type="number"
+            name="time"
+            defaultValue={360}
+            min={0}
+            max={3600}
+            value={editTimerValue}
+            onChange={(e) =>
+              setEditTimerValue(minMaxValue(Number.parseInt(e.target.value)))
+            }
+            className="rounded px-2 py-1 bg-slate-100 "
+          ></input>
+          <div className="w-full flex flex-row justify-between">
+            <ActionButton onClick={handleTimerEdit} colorCode="Success">
+              Submit
+            </ActionButton>
+            <ActionButton
+              onClick={() => editModalRef.current?.close()}
+              colorCode="Alert"
+            >
+              Cancel
+            </ActionButton>
+          </div>
+        </div>
+      </AltModal>
+      <AltModal ref={editModal2Ref}>MODAL 2</AltModal>
     </div>
   );
 };

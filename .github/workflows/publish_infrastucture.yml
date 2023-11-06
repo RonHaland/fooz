@@ -1,0 +1,48 @@
+name: Publish infrastructure to Azure
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "foozInfra/**.bicep"
+
+env:
+  AZ_RESOURCE_GROUP: rg-fooz-tournaments
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_DOCKER_PASSWORD: ${{ secrets.ARM_DOCKER_PASSWORD }}
+  ARM_DOCKER_REGISTRY: "ronhaland"
+  ARM_DOCKER_USER: "ronhaland"
+  API_IMAGE_NAME: "fooz/api:${{ github.ref_name }}"
+  CLIENT_IMAGE_NAME: "fooz/client:${{ github.ref_name }}"
+
+jobs:
+  publish-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to azure
+        run: |
+          az login --service-principal -u "$ARM_CLIENT_ID" -p "$ARM_CLIENT_SECRET" \
+          --tenant "$ARM_TENANT_ID" || (echo -e "\n\nFailed to log in to Azure."; exit 1)
+          az acr login --name ronhaland
+
+      - uses: actions/checkout@v3
+      - name: What if
+        working-directory: foozInfra
+        run: |
+          az deployment group create --template-file main.bicep -g $AZ_RESOURCE_GROUP --what-if \
+          --parameters registryName="$ARM_DOCKER_REGISTRY" \
+          dockerRegistryPassword="$ARM_DOCKER_PASSWORD" dockerRegistryUserName="$ARM_DOCKER_USER" \
+          clientImageName="$CLIENT_IMAGE_NAME" apiImageName="$API_IMAGE_NAME"
+
+      - name: Deploy
+        working-directory: foozInfra
+        run: |
+          az deployment group create --template-file main.bicep -g $AZ_RESOURCE_GROUP \
+          --parameters registryName="$ARM_DOCKER_REGISTRY" \
+          dockerRegistryPassword="$ARM_DOCKER_PASSWORD" dockerRegistryUserName="$ARM_DOCKER_USER" \
+          clientImageName="$CLIENT_IMAGE_NAME" apiImageName="$API_IMAGE_NAME"

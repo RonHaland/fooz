@@ -1,0 +1,38 @@
+name: Build dotnet container
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "foozApi/**"
+
+env:
+  AZ_RESOURCE_GROUP: rg-bicep-test
+  AZ_WEBAPP_NAME: wa-bicep-api
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  API_IMAGE_NAME: fooz/client
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connect to container registry
+        run: |
+          az login --service-principal -u "$ARM_CLIENT_ID" -p "$ARM_CLIENT_SECRET" --tenant "$ARM_TENANT_ID" || (echo -e "\n\nFailed to log in to Azure."; exit 1)
+          az acr login --name ronhaland
+
+      - uses: actions/checkout@v3
+      - name: build docker image
+        working-directory: ./foozApi
+        run: docker build . --file foozApi/Dockerfile --tag ronhaland.azurecr.io/${{ env.API_IMAGE_NAME }}:${{ github.ref_name }} --build-arg VERSION=${{ github.ref_name }}
+
+      - name: Push image
+        run: docker push ronhaland.azurecr.io/${{ env.API_IMAGE_NAME }}:${{ github.ref_name }}
+
+      - name: Restart webapp
+        run: az webapp restart --resource-group $AZ_RESOURCE_GROUP --name $AZ_WEBAPP_NAME

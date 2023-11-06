@@ -70,6 +70,7 @@ const LivePage = () => {
         setTimerUpdate(null);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [timerUpdate]
   );
 
@@ -95,60 +96,64 @@ const LivePage = () => {
   }, []);
 
   return (
-    <div className="container mx-auto pt-20 h-full">
-      <div className="flex flex-col text-slate-200">
-        <h1 className="text-4xl text-center font-semibold">
-          {tournament?.name}
-        </h1>
-        {currentMatchItem && (
-          <h2 className="text-2xl text-center">
-            ROUND {(currentMatchItem.roundNumber ?? 0) + 1} - MATCH{" "}
-            {(currentMatchItem.matchNumber ?? 0) + 1}
-          </h2>
-        )}
-        <div className="grid grid-cols-2 grid-row-5 md:grid-cols-3 mt-16 gap-8">
-          <div className="p-4 rounded bg-slate-800 border border-slate-200/20 h-fit row-span-2 row-start-4 col-start-1 md:row-start-1 col-span-2 md:col-span-1">
-            <h2 className="text-center text-lg">Scores</h2>
-            <Scoreboard>{players}</Scoreboard>
+    <div className="h-[100dvh]">
+      <div className="grid grid-cols-[400px_1fr_1fr_400px] grid-rows-5 text-slate-200 h-full">
+        <div className="col-span-2 col-start-2">
+          <div className="flex flex-col justify-center h-full gap-2">
+            <h1 className="text-6xl text-center font-semibold">
+              {tournament?.name}
+            </h1>
+            {currentMatchItem && (
+              <h2 className="text-3xl text-center">
+                ROUND {(currentMatchItem.roundNumber ?? 0) + 1} - MATCH{" "}
+                {(currentMatchItem.matchNumber ?? 0) + 1}
+              </h2>
+            )}
           </div>
-          {currentMatchItem ? (
-            <div className="flex justify-center gap-24 col-span-2 md:col-span-1">
-              <TeamDisplay
-                team={currentMatchItem.team1}
-                matchId={currentMatchItem.id}
-              />
-              <div className="flex flex-col justify-around items-center mt-6 gap-2">
-                <span className="h-fit">VS</span>
-              </div>
-              <TeamDisplay
-                team={currentMatchItem.team2}
-                matchId={currentMatchItem.id}
-                align="right"
-              />
+        </div>
+        <div className="p-4 m-4 rounded bg-slate-800 border border-slate-200/20 row-span-5 row-start-4 col-start-1 md:row-start-1 col-span-2 md:col-span-1 max-w-fit">
+          <h2 className="text-center text-lg">Scores</h2>
+          <Scoreboard>{players}</Scoreboard>
+        </div>
+        {currentMatchItem ? (
+          <div className="flex justify-center text-xl gap-24 col-span-2 md:col-start-2 md:row-start-2">
+            <TeamDisplay
+              team={currentMatchItem.team1}
+              matchId={currentMatchItem.id}
+            />
+            <div className="flex flex-col justify-around items-center mt-6 gap-2">
+              <span className="h-fit">VS</span>
             </div>
-          ) : (
-            <div className="flex justify-center">
-              <span className="text-4xl text-center ">
-                ALL MATCHES COMPLETE
-              </span>
-            </div>
-          )}
-          <h2 className="text-4xl text-center col-span-2 md:col-span-1">
+            <TeamDisplay
+              team={currentMatchItem.team2}
+              matchId={currentMatchItem.id}
+              align="right"
+            />
+          </div>
+        ) : (
+          <div className="flex justify-center col-span-2 md:col-start-2 md:row-start-2">
+            <span className="text-4xl text-center ">ALL MATCHES COMPLETE</span>
+          </div>
+        )}
+        <div className="flex flex-col justify-center items-center col-span-2 gap-16 bg-slate-950/20 mr-4">
+          <div className="border-t border-slate-400/20 h-1 min-w-fit w-[60%]"></div>
+          <h2 className="text-6xl text-center w-fit">
             {timeLeft < 0 ? "OVERTIMER: " : "TIMER: "} <br />
             {timeLeft < 0 ? (timeLeft + 120).toFixed(0) : timeLeft.toFixed(0)}
           </h2>
-          <div>
-            <h2>Previous Game</h2>
-            {currentMatch?.previousMatch && (
-              <MatchCard match={currentMatch?.previousMatch} />
-            )}
-          </div>
-          <div>
-            <h2>Next Game</h2>
-            {currentMatch?.nextMatch && (
-              <MatchCard match={currentMatch?.nextMatch} />
-            )}
-          </div>
+          <div className="border-t border-slate-400/20 h-1 min-w-fit w-[60%]"></div>
+        </div>
+        <div className="row-start-5">
+          <h2>Previous Game</h2>
+          {currentMatch?.previousMatch && (
+            <MatchCard match={currentMatch?.previousMatch} />
+          )}
+        </div>
+        <div className="row-start-5 flex flex-col items-end mr-4">
+          <h2>Next Game</h2>
+          {currentMatch?.nextMatch && (
+            <MatchCard match={currentMatch?.nextMatch} />
+          )}
         </div>
       </div>
     </div>
