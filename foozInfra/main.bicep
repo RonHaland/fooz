@@ -7,7 +7,7 @@ param clientImageName string
 param apiImageName string
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: 'biceptstoret00'
+  name: 'fooztournmtstoret00'
   location: location
   sku: {
     name: 'Standard_LRS'
