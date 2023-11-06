@@ -6,7 +6,7 @@ set -o
 echo -e "/nCurrent dir:"
 echo $(ls)
 echo -e "\n\n new hash:"
-newHash=($(shasum -a 256 ./remix-app/package.json))
+newHash=($(shasum -a 256 ./foozClient/package.json))
 echo $newHash
 echo -e "\n\n"
 

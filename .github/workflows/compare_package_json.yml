@@ -5,9 +5,9 @@ on:
   workflow_call:
 
 env:
-  AZ_RESOURCE_GROUP: rg-fooz-tournaments
+  AZ_RESOURCE_GROUP: rg-fooz-tournament
   AZ_LOCATION: norwayeast
-  AZ_STORAGE_NAME: stbicep99anoeast
+  AZ_STORAGE_NAME: foozinfra99noeast
   AZ_STORAGE_CONTAINER_NAME: hashfile
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}

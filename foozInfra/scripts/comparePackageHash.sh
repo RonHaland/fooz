@@ -13,11 +13,20 @@ echo -e "\n\nSetting working subscription..."
 az account set --subscription "$ARM_SUBSCRIPTION_ID" || (echo -e "\n\nFailed to set working subscription."; exit 1)
 
 echo -e "\n\nCreating storage account...\n\n"
-az storage account create --name "$AZ_STORAGE_NAME" --resource-group "$AZ_RESOURCE_GROUP" --location "$AZ_LOCATION" --sku Standard_LRS --tags Application="tappy" || (echo -e "\n\nFailed to create Azure storage account."; exit 1)
+az storage account create --name "$AZ_STORAGE_NAME" --resource-group "$AZ_RESOURCE_GROUP" --location "$AZ_LOCATION" --sku Standard_LRS --tags Application="fooz" || (echo -e "\n\nFailed to create Azure storage account."; exit 1)
 
 echo -e "\n\nCreating storage container...\n\n"
 az storage container create --name "$AZ_STORAGE_CONTAINER_NAME" --account-name "$AZ_STORAGE_NAME" --auth-mode login || (echo -e "\n\nFailed to create Azure container."; exit 1)
 #az storage table create --name "AZ_STORAGE_TABLE_NAME" --account-name "$AZ_STORAGE_NAME" --auth-mode login || (echo -e "\n\nFailed to create Azure table."; exit 1)
+
+echo -e "\n\nAdd role assignment...\n\n"
+az role assignment create --assignee "$ARM_CLIENT_ID" \
+                    --role "Storage Blob Data Contributor" \
+                    --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$AZ_RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$AZ_STORAGE_NAME/blobServices/default/containers/$AZ_STORAGE_CONTAINER_NAME"
+az role assignment create --assignee "$ARM_CLIENT_ID" \
+                    --role "Storage Blob Data Reader" \
+                    --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$AZ_RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$AZ_STORAGE_NAME/blobServices/default/containers/$AZ_STORAGE_CONTAINER_NAME"
+
 
 echo -e "\n\nChecking for hash file...\n\n"
 exists=($(az storage blob exists --name "$BRANCH_NAME.txt" --container-name "$AZ_STORAGE_CONTAINER_NAME" --account-name "$AZ_STORAGE_NAME" --auth-mode login | \
@@ -33,7 +42,7 @@ fi
 echo -e "\n\nDownloading hash file...\n\n"
 hashFile=($(az storage blob download --name "$BRANCH_NAME.txt" --container-name "$AZ_STORAGE_CONTAINER_NAME" --account-name "$AZ_STORAGE_NAME" --auth-mode login))
 
-currentVersionHash=($(shasum -a 256 ./remix-app/package.json))
+currentVersionHash=($(shasum -a 256 ./foozclient/package.json))
 
 echo -e "\n\nCOMPARING:"
 echo $currentVersionHash
