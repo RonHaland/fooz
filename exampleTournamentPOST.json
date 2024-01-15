@@ -1,6 +1,6 @@
 {
-  "name": "string",
-  "roundCount": 1,
+  "name": "Fooz Turnering 😍",
+  "roundCount": 3,
   "participants": [
     {
       "name": "one"
@@ -31,6 +31,12 @@
     },
     {
       "name": "ten"
+    },
+    {
+      "name": "eleven"
+    },
+    {
+      "name": "Sigurd"
     }
   ]
 }

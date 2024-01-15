@@ -23,6 +23,7 @@ echo -e "\n\nAdd role assignment...\n\n"
 az role assignment create --assignee "$ARM_CLIENT_ID" \
                     --role "Storage Blob Data Contributor" \
                     --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$AZ_RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$AZ_STORAGE_NAME/blobServices/default/containers/$AZ_STORAGE_CONTAINER_NAME"
+
 az role assignment create --assignee "$ARM_CLIENT_ID" \
                     --role "Storage Blob Data Reader" \
                     --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$AZ_RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$AZ_STORAGE_NAME/blobServices/default/containers/$AZ_STORAGE_CONTAINER_NAME"
@@ -42,7 +43,7 @@ fi
 echo -e "\n\nDownloading hash file...\n\n"
 hashFile=($(az storage blob download --name "$BRANCH_NAME.txt" --container-name "$AZ_STORAGE_CONTAINER_NAME" --account-name "$AZ_STORAGE_NAME" --auth-mode login))
 
-currentVersionHash=($(shasum -a 256 ./foozclient/package.json))
+currentVersionHash=($(shasum -a 256 ./foozClient/package.json))
 
 echo -e "\n\nCOMPARING:"
 echo $currentVersionHash

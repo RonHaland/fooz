@@ -25,9 +25,30 @@ const LivePage = () => {
     amount: string;
   } | null>(null);
 
+  var team1players = [
+    currentMatch?.currentMatch?.team1.player1.id,
+    currentMatch?.currentMatch?.team1.player2.id,
+  ];
+  var team2players = [
+    currentMatch?.currentMatch?.team2.player1.id,
+    currentMatch?.currentMatch?.team2.player2.id,
+  ];
+
   const players = tournament?.participants
     .sort((a, b) => b.score - a.score)
-    .map((p, i) => <ScoreRow key={p.id} player={p} ind={i + 1} />);
+    .map((p, i) => {
+      const isTeam1 = team1players.includes(p.id);
+      const isTeam2 = team2players.includes(p.id);
+      const highlight = isTeam1 ? "green" : isTeam2 ? "yellow" : undefined;
+      return (
+        <ScoreRow
+          key={p.id}
+          player={p}
+          ind={i + 1}
+          highlightColor={highlight}
+        />
+      );
+    });
 
   const currentMatchItem = currentMatch?.currentMatch;
 

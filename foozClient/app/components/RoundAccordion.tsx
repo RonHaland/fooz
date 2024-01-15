@@ -26,7 +26,7 @@ export const RoundAccordion = ({ round }: Props) => {
   if (round.isCompleted) {
     className =
       "bg-lime-200 dark:from-lime-700 dark:to-lime-800 hover:dark:to-lime-900 bg-gradient-to-t";
-    bgClass = "bg-lime-200 dark:from-lime-700";
+    bgClass = "bg-lime-200 dark:bg-lime-700";
   }
   return (
     <div
