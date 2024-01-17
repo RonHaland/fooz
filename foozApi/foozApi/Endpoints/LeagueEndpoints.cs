@@ -1,4 +1,5 @@
 ﻿using foozApi.DTO;
+using foozApi.Models;
 using foozApi.OldModels;
 using foozApi.Services;
 using foozApi.Storage;
@@ -6,52 +7,59 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace foozApi.Endpoints;
 
-public static class TournamentEndpoints
+public static class LeagueEndpoints
 {
     private static RouteHandlerBuilder WithCommonOpenApi(this RouteHandlerBuilder builder)
     {
         return builder
-            .WithTags("Tournament")
+            .WithTags("League")
             .WithOpenApi();
     }
 
-    public static WebApplication AddTournamentEndpoints(this WebApplication app)
+    public static WebApplication AddLeagueEndpoints(this WebApplication app)
     {
         var storageService = app.Services.GetRequiredService<TableStorage>();
-        var tournamentService = app.Services.GetRequiredService<TournamentService>();
+        var leagueService = app.Services.GetRequiredService<LeagueService>();
         var liveUpdater = app.Services.GetRequiredService<LiveUpdateService>();
 
-        app.MapPost("/Tournament", async ([FromBody] PostTournament body) =>
+        app.MapGet("/League/MatchCountOptions", (int playerCount) =>
         {
-            return await tournamentService.CreateTournament(body);
+            return leagueService.PossibleMatchCounts(playerCount);
         })
-        .WithName("PostTournament")
+        .WithName("Get match count options")
         .WithCommonOpenApi();
 
-        app.MapGet("/Tournament/{tournamentId}", async ([FromRoute] string tournamentId) =>
+        app.MapPost("/League", async ([FromBody] PostLeague body) =>
         {
-            var result = await storageService.GetTournament(tournamentId);
+            return await leagueService.CreateLeague(body.Name, body.Players, body.MatchCount);
+        })
+        .WithName("Post League")
+        .WithCommonOpenApi();
+
+        app.MapGet("/League/{tournamentId}", async ([FromRoute] string tournamentId) =>
+        {
+            var result = await leagueService.GetLeague(tournamentId);
             if (result == null)
             {
                 return Results.NotFound();
             }
             return Results.Ok(result);
         })
-        .WithName("Get Tournament")
-        .Produces<Tournament>(StatusCodes.Status200OK)
+        .WithName("Get League")
+        //.Produces<League>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .WithCommonOpenApi();
 
-        app.MapGet("/Tournaments", async () =>
+        app.MapGet("/Leagues", async () =>
         {
-            var tournaments = await tournamentService.GetTournaments();
+            var tournaments = await leagueService.GetLeagues();
             if (tournaments == null)
             {
                 return Results.NotFound();
             }
             return Results.Ok(tournaments);
         })
-        .WithName("Get all Tournaments")
+        .WithName("Get all Leagues")
         .Produces<TournamentsResponse[]>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .WithCommonOpenApi();

@@ -2,7 +2,7 @@
 using AzureTableContext.Attributes;
 using System.Text.Json.Serialization;
 
-namespace foozApi.Models;
+namespace foozApi.OldModels;
 
 [TableName("Teams")]
 public class Team : TableModel

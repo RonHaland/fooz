@@ -2,14 +2,14 @@
 using AzureTableContext.Attributes;
 using System.Text.Json.Serialization;
 
-namespace foozApi.Models;
+namespace foozApi.OldModels;
 
 [TableName("Participants")]
 public class Participant : TableModel
 {
     public Participant()
     {
-        
+
     }
 
     public string Name { get; set; } = null!;
@@ -22,7 +22,7 @@ public class Participant : TableModel
     [TableIgnore]
     public int MatchesPlayed => Teams.Sum(t => t.HomeMatches.Count(hm => hm.IsCompleted) + t.AwayMatches.Count(am => am.IsCompleted));
     [JsonIgnore]
-    [TableIgnore]
+    [TableParent]
     public Tournament Tournament { get; set; } = null!;
     [TableIgnore]
     [JsonIgnore]

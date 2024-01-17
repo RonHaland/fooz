@@ -1,7 +1,7 @@
 ﻿using AzureTableContext;
 using AzureTableContext.Attributes;
 
-namespace foozApi.Models;
+namespace foozApi.OldModels;
 
 [TableName("Tournaments")]
 public class Tournament : TableModel

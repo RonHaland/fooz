@@ -1,26 +1,23 @@
 ﻿using AzureTableContext;
 using AzureTableContext.Attributes;
-using System.Text.Json.Serialization;
 
 namespace foozApi.Models;
 
 [TableName("Matches")]
 public class Match : TableModel
 {
-    public Match() {}
+    [TableForeignKey]
+    public Player Team1Player1 { get; set; } = null!;
+    [TableForeignKey]
+    public Player Team1Player2 { get; set; } = null!;
+    public int Team1Score { get; set; }
+    [TableForeignKey]
+    public Player Team2Player1 { get; set; } = null!;
+    [TableForeignKey]
+    public Player Team2Player2 { get; set; } = null!;
+    public int Team2Score { get; set; }
 
-    public int MatchNumber { get; set; } = 0;
-    [TableIgnore]
-    public int RoundNumber => Round.RoundNumber;
-    [TableParent]
-    [JsonIgnore]
-    public Round Round { get; set; } = null!;
     public bool IsCompleted { get; set; } = false;
-
-    [TableForeignKey]
-    public Team Team1 { get; set; } = null!;
-    public int Team1Score { get; set; } = 0;
-    [TableForeignKey]
-    public Team Team2 { get; set; } = null!;
-    public int Team2Score { get; set; } = 0;
+    [TableIgnore]
+    public List<Player> Players => [ Team1Player1, Team1Player2, Team2Player1, Team2Player2 ];
 }

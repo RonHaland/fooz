@@ -2,14 +2,14 @@
 using AzureTableContext.Attributes;
 using Discord.Rest;
 
-namespace foozApi.Models;
+namespace foozApi.OldModels;
 
 [TableName("Users")]
 public class User : TableModel
 {
     public User()
     {
-        
+
     }
 
     public User(RestSelfUser user)

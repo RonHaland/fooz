@@ -16,6 +16,7 @@ builder.Services.AddCors();
 
 builder.Services.AddSingleton<TableStorage>();
 builder.Services.AddSingleton<TournamentService>();
+builder.Services.AddSingleton<LeagueService>();
 builder.Services.AddSingleton<LiveUpdateService>();
 builder.Services.AddSingleton<UserService>();
 
@@ -41,7 +42,8 @@ app.UseHttpsRedirection();
 app.UseWebSockets();
 
 app.AddMatchEndpoints();
-app.AddTournamentEndpoints();
+//app.AddTournamentEndpoints();
+app.AddLeagueEndpoints();
 app.AddLiveEndpoints();
 app.AddUserEndpoints();
 

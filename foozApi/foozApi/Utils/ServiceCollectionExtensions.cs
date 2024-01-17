@@ -1,5 +1,6 @@
 ﻿using AzureTableContext;
 using foozApi.Models;
+using foozApi.OldModels;
 
 namespace foozApi.Utils;
 
@@ -14,9 +15,12 @@ public static class ServiceCollectionExtensions
                 .RegisterTable<User>()
                 .RegisterTable<Tournament>()
                 .RegisterTable<Round>()
-                .RegisterTable<Match>()
+                .RegisterTable<OldModels.Match>()
                 .RegisterTable<Team>()
-                .RegisterTable<Participant>();
+                .RegisterTable<Participant>()
+                .RegisterTable<League>()
+                .RegisterTable<Models.Match>()
+                .RegisterTable<Player>();
 
         return services.AddSingleton(tableContext);
     }

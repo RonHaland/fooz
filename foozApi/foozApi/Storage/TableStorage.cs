@@ -1,6 +1,6 @@
 ﻿using AzureTableContext;
 using foozApi.DTO;
-using foozApi.Models;
+using foozApi.OldModels;
 using System.Diagnostics;
 
 namespace foozApi.Storage;
@@ -14,12 +14,12 @@ public class TableStorage
         _tableContext = tableContext;
     }
 
-    public async Task AddTournament(Models.Tournament tournament)
+    public async Task AddTournament(Tournament tournament)
     {
         await _tableContext.Save(tournament);
     }
 
-    public async Task<Models.Tournament?> GetTournament(string tournamentId)
+    public async Task<Tournament?> GetTournament(string tournamentId)
     {
         var sw = new Stopwatch();
         sw.Start();

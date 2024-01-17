@@ -1,5 +1,5 @@
 ﻿using Discord.Rest;
-using foozApi.Models;
+using foozApi.OldModels;
 using foozApi.Services;
 
 namespace foozApi.Endpoints;

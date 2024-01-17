@@ -2,7 +2,7 @@
 using AzureTableContext.Attributes;
 using System.Text.Json.Serialization;
 
-namespace foozApi.Models;
+namespace foozApi.OldModels;
 
 [TableName("Rounds")]
 public class Round : TableModel
