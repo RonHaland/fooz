@@ -1,33 +1,35 @@
-﻿using foozApi.Storage.Entities;
+﻿using AzureTableContext;
+using AzureTableContext.Attributes;
 using System.Text.Json.Serialization;
 
 namespace foozApi.Models;
 
-public class Team
+[TableName("Teams")]
+public class Team : TableModel
 {
     public Team()
     {
-        Id = Guid.NewGuid();
+        Id = Guid.NewGuid().ToString();
     }
-    public Team(TeamEntity entity, IDictionary<string, Round> roundDictionary, IDictionary<string, Participant> playerDictionary)
-    {
-        Id = Guid.Parse(entity.RowKey);
-        Round = roundDictionary[entity.PartitionKey];
-        Player1 = playerDictionary[entity.Player1Id];
-        Player2 = playerDictionary[entity.Player2Id];
-    }
-    public Guid Id { get; set; }
+
+    [TableIgnore]
     public string RoundId => $"{Round.Tournament.Id}_{Round.RoundNumber}";
+    [TableParent]
     [JsonIgnore]
     public Round Round { get; set; } = null!;
 
+    [TableIgnore]
     [JsonIgnore]
     public IEnumerable<Match> HomeMatches { get; set; } = Enumerable.Empty<Match>();
+    [TableIgnore]
     [JsonIgnore]
     public IEnumerable<Match> AwayMatches { get; set; } = Enumerable.Empty<Match>();
 
+    [TableForeignKey]
     public Participant Player1 { get; set; } = null!;
+    [TableForeignKey]
     public Participant Player2 { get; set; } = null!;
+    [TableIgnore]
     public int Score => CalculateScore();
 
     private int CalculateScore()

@@ -92,7 +92,7 @@ public class TournamentService
 
     public async Task<TournamentsResponse[]?> GetTournaments()
     {
-        return _tableStorage.GetTournamentsList();
+        return await _tableStorage.GetTournamentsList();
     }
 
     public async Task UpdateMatchScore(PutMatch putMatch, string tournamentId, string matchId)
@@ -126,7 +126,7 @@ public class TournamentService
             Name = p.Name,
             Weigth = p.Weight,
             Tournament = tournament,
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString(),
         });
     }
 
@@ -193,7 +193,7 @@ public class TournamentService
         return round;
     }
 
-    private IEnumerable<Match> CreateMatches(Round round, IEnumerable<Team> teams)
+    private List<Match> CreateMatches(Round round, IEnumerable<Team> teams)
     {
         var matchTeams = teams.ToList();
         var teamCount = matchTeams.Count;

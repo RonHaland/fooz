@@ -1,18 +1,17 @@
-﻿using foozApi.Storage.Entities;
+﻿using AzureTableContext;
+using AzureTableContext.Attributes;
 
 namespace foozApi.Models;
 
-public class Tournament
+[TableName("Tournaments")]
+public class Tournament : TableModel
 {
     public Tournament() { }
-    public Tournament(TournamentEntity entity)
-    {
-        Id = Guid.Parse(entity.RowKey);
-        Name = entity.Name;
-    }
-    public Guid Id { get; set; } = Guid.NewGuid();
+
     public string Name { get; set; } = null!;
-    public bool IsCompleted => Rounds.All(m => m.IsCompleted);
+    [TableIgnore]
+    public bool? IsCompleted => Rounds?.All(m => m.IsCompleted);
+    [TableIgnore]
     public IEnumerable<Participant> Participants { get; set; } = Enumerable.Empty<Participant>();
-    public IEnumerable<Round> Rounds { get; set; } = Enumerable.Empty<Round>().Order();
+    public List<Round>? Rounds { get; set; } = [];
 }

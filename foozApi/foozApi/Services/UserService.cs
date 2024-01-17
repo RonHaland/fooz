@@ -1,35 +1,29 @@
-﻿using Azure.Data.Tables;
+﻿using AzureTableContext;
 using foozApi.Models;
-using foozApi.Storage.Entities;
-using System.Text.Json;
 
 namespace foozApi.Services;
 
 public class UserService
 {
-    public UserService(IConfiguration config)
-    {
-        var connectionString = config.GetValue<string>("TableConnectionString");
+    private readonly TableContext _tableContext;
 
-        UserClient = new TableClient(connectionString, "Users");
-        UserClient.CreateIfNotExists();
+    public UserService(TableContext tableContext)
+    {
+        _tableContext = tableContext;
     }
 
-    public TableClient UserClient { get; private set; }
 
     public async Task<IEnumerable<string>> UpdateUserAndGetRoles(User user)
     {
-        var userEntity = new UserEntity(user);
-        var existing = await UserClient.GetEntityIfExistsAsync<UserEntity>(userEntity.PartitionKey, userEntity.RowKey);
-        if (existing != null && existing.HasValue)
+        var existingUsers = await _tableContext.QueryAsync<User>($"PartitionKey eq '{user.PartitionKey}' and RowKey eq '{user.Id}'");
+        if (existingUsers != null && existingUsers.Any())
         {
-            userEntity.Roles = existing.Value.Roles;
-            userEntity.ETag = existing.Value.ETag;
+            var fetchedUser = existingUsers.First();
+            user.Roles = fetchedUser.Roles;
         }
-        var roles = JsonSerializer.Deserialize<List<string>>(userEntity.Roles) ?? new List<string>();
-        await UserClient.UpsertEntityAsync(userEntity);
+        await _tableContext.Save(user);
 
-        return roles;
+        return user.Roles;
     }
 }
 

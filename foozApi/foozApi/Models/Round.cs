@@ -1,25 +1,25 @@
-﻿using foozApi.Storage.Entities;
+﻿using AzureTableContext;
+using AzureTableContext.Attributes;
 using System.Text.Json.Serialization;
 
 namespace foozApi.Models;
 
-public class Round
+[TableName("Rounds")]
+public class Round : TableModel
 {
     public Round()
     {
     }
 
-    public Round(RoundEntity entity, Tournament tournament)
-    {
-        Tournament = tournament;
-        RoundNumber = int.Parse(entity.RowKey);
-    }
-
-    public string Id => $"{Tournament.Id}_{RoundNumber}";
+    [TableParent]
     [JsonIgnore]
     public Tournament Tournament { get; set; } = null!;
     public int RoundNumber { get; set; } = 0;
+    [TableIgnore]
     public bool IsCompleted => Matches.All(m => m.IsCompleted);
-    public IEnumerable<Match> Matches { get; set; } = Enumerable.Empty<Match>();
-    public IEnumerable<Team> Teams { get; set; } = Enumerable.Empty<Team>();
+    [TableComboKey]
+    public List<Match> Matches { get; set; } = [];
+    [TableComboKey]
+    [JsonIgnore]
+    public List<Team> Teams { get; set; } = [];
 }
