@@ -39,7 +39,7 @@ const LivePage = () => {
     .map((p, i) => {
       const isTeam1 = team1players.includes(p.id);
       const isTeam2 = team2players.includes(p.id);
-      const highlight = isTeam1 ? "green" : isTeam2 ? "yellow" : undefined;
+      const highlight = isTeam1 ? "purple" : isTeam2 ? "cyan" : undefined;
       return (
         <ScoreRow
           key={p.id}
@@ -175,6 +175,16 @@ const LivePage = () => {
           {currentMatch?.nextMatch && (
             <MatchCard match={currentMatch?.nextMatch} />
           )}
+        </div>
+        <div className="p-4 m-4 rounded bg-slate-800 border border-slate-200/20 row-span-5 row-start-4 col-start-4 md:row-start-1 col-span-2 md:col-span-1 max-w-fit w-full">
+          {currentMatch?.nextMatch && (
+            <>
+              <h2 className="text-center text-lg">Upcoming Game</h2>
+              <MatchCard match={currentMatch?.nextMatch} />
+            </>
+          )}
+          <div className="border-t border-slate-400/20 h-1 min-w-fit w-full"></div>
+          <h2 className="text-center text-lg">Past Games</h2>
         </div>
       </div>
     </div>

@@ -26,7 +26,9 @@ export const TournamentList = ({
     >
       <td className="p-1 sm:py-3">
         <div className="flex flex-col text-slate-300">
-          <span className="font-semibold">{t.name}</span>
+          <span className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden h-6">
+            {t.name}
+          </span>
           <span className="sm:hidden">
             {new Date(t.time).toLocaleDateString()}
           </span>
