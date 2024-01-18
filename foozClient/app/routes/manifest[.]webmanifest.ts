@@ -1,6 +1,9 @@
 import { json } from '@remix-run/node';
+import {icons} from '../../public/icons/icons.json'
 
 export const loader = async () => {
+  console.log(icons);
+  icons.forEach(i => { if (!i.src.startsWith('icons/')) i.src = 'icons/'+i.src});
   return json(
     {
       short_name: 'Fooz',
@@ -24,6 +27,7 @@ export const loader = async () => {
         },
       ],
       icons: [
+        ...icons,
         {
           src: '/favicon.ico',
           sizes: '256x256',

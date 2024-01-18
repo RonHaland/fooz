@@ -17,7 +17,7 @@ public class User : TableModel
         Id = user.Id.ToString();
         Name = user.Username;
         Email = user.Email;
-        Locale = user.Locale;
+        PartitionKey = user.Locale;
     }
 
     public string Name { get; set; } = null!;

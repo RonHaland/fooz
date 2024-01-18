@@ -36,9 +36,9 @@ public static class LeagueEndpoints
         .WithName("Post League")
         .WithCommonOpenApi();
 
-        app.MapGet("/League/{tournamentId}", async ([FromRoute] string tournamentId) =>
+        app.MapGet("/League/{id}", async ([FromRoute] string id) =>
         {
-            var result = await leagueService.GetLeague(tournamentId);
+            var result = await leagueService.GetLeague(id);
             if (result == null)
             {
                 return Results.NotFound();
@@ -52,17 +52,32 @@ public static class LeagueEndpoints
 
         app.MapGet("/Leagues", async () =>
         {
-            var tournaments = await leagueService.GetLeagues();
-            if (tournaments == null)
+            var leagues = await leagueService.GetLeagues();
+            if (leagues == null)
             {
                 return Results.NotFound();
             }
-            return Results.Ok(tournaments);
+            return Results.Ok(leagues.Select(l => new LeaguesResponse
+            {
+                Id = l.Id,
+                MatchCount = l.Matches.Count,
+                PlayerCount = l.Players.Count,
+                Name = l.Name,
+                Time = l.ModifiedDate
+            }));
         })
         .WithName("Get all Leagues")
-        .Produces<TournamentsResponse[]>(StatusCodes.Status200OK)
+        .Produces<LeaguesResponse[]>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .WithCommonOpenApi();
+
+        app.MapDelete("/League/{id}", async (string id) =>
+        {
+            await leagueService.DeleteLeague(id);
+        })
+        .WithName("Delete League")
+        .WithCommonOpenApi();
+
         return app;
     }
 }

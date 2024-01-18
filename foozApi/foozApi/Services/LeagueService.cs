@@ -1,4 +1,5 @@
 ﻿using AzureTableContext;
+using foozApi.DTO;
 using foozApi.Models;
 
 namespace foozApi.Services;
@@ -27,6 +28,7 @@ public class LeagueService
         var counters = names.OrderBy(n => Random.Shared.Next(100)).ToDictionary(k => new Player { Name = k }, v => 0);
 
         var matches = new List<Match>();
+        int count = 0;
 
         while (matches.Count < matchCount)
         {
@@ -39,6 +41,7 @@ public class LeagueService
                 Team1Player2 = selected.Skip(1).First().Key,
                 Team2Player1 = selected.Skip(2).First().Key,
                 Team2Player2 = selected.Skip(3).First().Key,
+                Order = count,
             };
 
             matches.Add(match);
@@ -46,6 +49,7 @@ public class LeagueService
             {
                 counters[item.Key]++;
             }
+            count++;
         }
 
         var players = counters.Select(c => c.Key).ToList();
@@ -74,21 +78,63 @@ public class LeagueService
 
     public async Task<List<League>> GetLeagues()
     {
-        var leagues = await _tableContext.QueryAsync<League>("", 0);
+        var leagues = await _tableContext.QueryAsync<League>("", 1);
 
         return leagues?.ToList() ?? [];
     }
 
-    public async Task<List<League>> GetLeague(string id)
+    public async Task<League?> GetLeague(string id)
     {
         var leagues = await _tableContext.QueryAsync<League>($"RowKey eq '{id}'");
         var league = leagues?.FirstOrDefault();
-        if (league == null) return [];
+        if (league == null) return null;
         FillPlayerMatches(league.Matches, league.Players);
-        return leagues?.ToList() ?? [];
+        league.Matches = league.Matches.OrderBy(m => m.Order).ToList();
+        return league;
+    }
+
+    public async Task DeleteLeague(string id)
+    {
+        var leagues = await _tableContext.QueryAsync<League>($"RowKey eq '{id}'");
+        var league = leagues?.FirstOrDefault();
+        if (league == null) return;
+        await _tableContext.Delete(league, 3);
+    }
+
+    public async Task<IEnumerable<Match>> GetMatches(string id)
+    {
+        var tournament = await GetLeague(id);
+
+        return tournament?.Matches ?? [];
+    }
+
+    public async Task<LeagueProgressResponse> GetLeagueProgress(string id)
+    {
+        var matches = await GetMatches(id);
+        var response = new LeagueProgressResponse
+        {
+            CurrentMatch = matches.FirstOrDefault(m => !m.IsCompleted),
+            UpcomingMatches = matches.Where(m => !m.IsCompleted).Skip(1).ToList(),
+            CompletedMatches = matches.Where(m => m.IsCompleted).ToList(),
+        };
+        return response;
+    }
+
+    public async Task UpdateMatchScores(string tournamentId, string matchId, int team1Score, int team2Score)
+    {
+        var MatchQuery = $"PartitionKey ge '{tournamentId}' and PartitionKey lt '{tournamentId}a' and RowKey eq '{matchId}'";
+        var matches = _tableContext.Query<Match>(MatchQuery);
+        var match = matches?.FirstOrDefault();
+        if (match == null) return;
+
+        match.Team1Score = team1Score;
+        match.Team2Score = team2Score;
+        match.IsCompleted = true;
+        await _tableContext.Save(match);
     }
 
     public List<int> PossibleMatchCounts(int playerCount, int maxGames = 100) => GetOptions(playerCount, maxGames);
 
     private List<int> GetOptions(int count, int max = 100) => Enumerable.Range(4, max).Where(n => count * n % 4 == 0 && count * n / 4 <= max).Select(n => n * count / 4).ToList();
+
 }

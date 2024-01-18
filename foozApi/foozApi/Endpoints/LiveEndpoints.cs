@@ -19,20 +19,20 @@ public static class LiveEndpoints
         var tournamentService = app.Services.GetRequiredService<TournamentService>();
         var liveUpdater = app.Services.GetRequiredService<LiveUpdateService>();
 
-        app.Map("/Tournament/{tournamentId}/live", async (string tournamentId, HttpContext context) =>
+        app.Map("/League/{id}/live", async (string id, HttpContext context) =>
         {
             if (context.WebSockets.IsWebSocketRequest)
             {
                 var socket = await context.WebSockets.AcceptWebSocketAsync();
-                await liveUpdater.ConnectClient(socket, tournamentId);
+                await liveUpdater.ConnectClient(socket, id);
             }
         })
         .WithName("Live Websocket Connection")
         .WithCommonOpenApi();
 
-        app.MapPut("/Tournament/{tournamentId}/live/timer", async ([FromBody] PutTimerUpdate putTimerUpdate, string tournamentId) =>
+        app.MapPut("/League/{id}/live/timer", async ([FromBody] PutTimerUpdate putTimerUpdate, string id) =>
         {
-            await liveUpdater.SendTimerUpdate(tournamentId, putTimerUpdate.TimerUpdate, putTimerUpdate.Amount);
+            await liveUpdater.SendTimerUpdate(id, putTimerUpdate.TimerUpdate, putTimerUpdate.Amount);
         })
         .WithName("Send Timer Update")
         .WithCommonOpenApi();

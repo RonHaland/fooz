@@ -35,7 +35,8 @@ public static class UserEndpoints
             }
 
             return Results.Ok(result);
-        });
+        })
+        .WithCommonOpenApi();
 
         return app;
     }
