@@ -2,33 +2,35 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import type { MetaFunction } from "@remix-run/react";
 import { useLoaderData, useParams } from "@remix-run/react";
-import type { CurrentMatch } from "~/_types/tournament";
+import type { LeagueProgress } from "~/_types/tournament";
 import { ImageHeader, LinkButton, TournamentNavBar } from "~/components";
 import { MatchInfo } from "~/components/MatchInfo";
 
 export const meta: MetaFunction = () => [{ title: "Matches" }];
 
 const MatchesPage = () => {
-  const { current } = useLoaderData<typeof loader>();
+  const { progress } = useLoaderData<typeof loader>();
   const { id } = useParams();
 
-  const currentMatchItem = current?.currentMatch;
+  const currentMatchItem = progress?.currentMatch;
 
   return (
     <div className="container mx-auto">
       <ImageHeader text="Current Match" src="/images/foosHeader.jpg" alt="" />
       <TournamentNavBar>
-        {current?.previousMatch && (
+        {progress?.completedMatches && (
           <LinkButton
-            href={`/tournament/${id}/matches/${current?.previousMatch?.id}`}
+            href={`/league/${id}/matches/${
+              progress?.completedMatches?.[progress.completedMatches.length]?.id
+            }`}
             colorCode="Alert"
           >
             Previous Match
           </LinkButton>
         )}
-        {current?.nextMatch && (
+        {progress?.upcomingMatches && (
           <LinkButton
-            href={`/tournament/${id}/matches/${current?.nextMatch?.id}`}
+            href={`/league/${id}/matches/${progress?.upcomingMatches?.[0]?.id}`}
             colorCode="Success"
           >
             Next Match
@@ -39,9 +41,7 @@ const MatchesPage = () => {
         {currentMatchItem ? (
           <div className="flex flex-col">
             <h2 className="text-6xl text-center">
-              {" "}
-              Round {(currentMatchItem.roundNumber ?? 0) + 1} - Match{" "}
-              {(currentMatchItem.matchNumber ?? 0) + 1}
+              Match {(currentMatchItem.order ?? 0) + 1}
             </h2>
             <MatchInfo currentMatch={currentMatchItem} />
           </div>
@@ -57,14 +57,14 @@ export default MatchesPage;
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const tournamentId = params["id"];
-  let current: CurrentMatch | null = null;
+  let progress: LeagueProgress | null = null;
   try {
     const matchResult = await fetch(
-      `${apiUrl}/tournament/${tournamentId}/CurrentMatch`
+      `${apiUrl}/league/${tournamentId}/progress`
     );
-    current = await matchResult.json();
+    progress = await matchResult.json();
   } catch (error) {
     console.log(error);
   }
-  return json({ current, apiUrl });
+  return json({ progress, apiUrl });
 };

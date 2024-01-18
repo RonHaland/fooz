@@ -23,4 +23,12 @@ public class Player : TableModel
     [TableIgnore, JsonIgnore]
     public IEnumerable<Match> DrawnMatches => HomeMatches.Where(m => m.IsCompleted && m.Team1Score == m.Team2Score)
                                         .Union(AwayMatches.Where(m => m.IsCompleted && m.Team1Score == m.Team2Score));
+    [TableIgnore, JsonIgnore]
+    public IEnumerable<Match> CompletedMatches => Matches.Where(m => m.IsCompleted);
+    [TableIgnore]
+    public int MatchCount => Matches.Count;
+    [TableIgnore]
+    public int MatchesPlayed => CompletedMatches.Count();
+    [TableIgnore]
+    public int Score => HomeMatches.Sum(h => h.Team1Score) + AwayMatches.Sum(a => a.Team2Score);
 }

@@ -1,8 +1,6 @@
 ﻿using foozApi.DTO;
 using foozApi.Models;
-using foozApi.OldModels;
 using foozApi.Services;
-using foozApi.Storage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace foozApi.Endpoints;
@@ -18,15 +16,14 @@ public static class LeagueEndpoints
 
     public static WebApplication AddLeagueEndpoints(this WebApplication app)
     {
-        var storageService = app.Services.GetRequiredService<TableStorage>();
         var leagueService = app.Services.GetRequiredService<LeagueService>();
-        var liveUpdater = app.Services.GetRequiredService<LiveUpdateService>();
 
         app.MapGet("/League/MatchCountOptions", (int playerCount) =>
         {
             return leagueService.PossibleMatchCounts(playerCount);
         })
         .WithName("Get match count options")
+        .Produces(StatusCodes.Status200OK)
         .WithCommonOpenApi();
 
         app.MapPost("/League", async ([FromBody] PostLeague body) =>
@@ -34,6 +31,7 @@ public static class LeagueEndpoints
             return await leagueService.CreateLeague(body.Name, body.Players, body.MatchCount);
         })
         .WithName("Post League")
+        .Produces<League>(StatusCodes.Status200OK)
         .WithCommonOpenApi();
 
         app.MapGet("/League/{id}", async ([FromRoute] string id) =>
@@ -46,7 +44,7 @@ public static class LeagueEndpoints
             return Results.Ok(result);
         })
         .WithName("Get League")
-        //.Produces<League>(StatusCodes.Status200OK)
+        .Produces<League>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound)
         .WithCommonOpenApi();
 
@@ -71,11 +69,26 @@ public static class LeagueEndpoints
         .Produces(StatusCodes.Status404NotFound)
         .WithCommonOpenApi();
 
+        app.MapGet("/League/{id}/Progress", async (string id) =>
+        {
+            var currentMatch = await leagueService.GetLeagueProgress(id);
+            if (currentMatch == null)
+            {
+                return Results.NotFound(currentMatch);
+            }
+
+            return Results.Ok(currentMatch);
+        })
+        .WithName("Get League Progress")
+        .Produces<LeagueProgressResponse>(StatusCodes.Status200OK)
+        .WithCommonOpenApi();
+
         app.MapDelete("/League/{id}", async (string id) =>
         {
             await leagueService.DeleteLeague(id);
         })
         .WithName("Delete League")
+        .Produces(StatusCodes.Status200OK)
         .WithCommonOpenApi();
 
         return app;

@@ -4,7 +4,7 @@ using foozApi.Models;
 
 namespace foozApi.Services;
 
-public class LeagueService
+public sealed class LeagueService
 {
     private readonly TableContext _tableContext;
 
@@ -72,7 +72,7 @@ public class LeagueService
     {
         foreach (var player in players)
         {
-            player.Matches = matches.Where(m => m.Players.Contains(player)).ToList();
+            player.Matches = matches.Where(m => m.Players.Select(p => p.Id).Contains(player.Id)).ToList();
         }
     }
 
@@ -88,8 +88,8 @@ public class LeagueService
         var leagues = await _tableContext.QueryAsync<League>($"RowKey eq '{id}'");
         var league = leagues?.FirstOrDefault();
         if (league == null) return null;
-        FillPlayerMatches(league.Matches, league.Players);
         league.Matches = league.Matches.OrderBy(m => m.Order).ToList();
+        FillPlayerMatches(league.Matches, league.Players);
         return league;
     }
 
@@ -99,6 +99,15 @@ public class LeagueService
         var league = leagues?.FirstOrDefault();
         if (league == null) return;
         await _tableContext.Delete(league, 3);
+    }
+
+
+    public async Task<Match?> GetMatch(string leagueId, string matchId)
+    {
+        var matchQuery = $"RowKey eq '{matchId}' and PartitionKey eq '{leagueId}'";
+        var matches = await _tableContext.QueryAsync<Match>(matchQuery);
+        var match = matches?.FirstOrDefault();
+        return match;
     }
 
     public async Task<IEnumerable<Match>> GetMatches(string id)

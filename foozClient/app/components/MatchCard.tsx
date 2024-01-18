@@ -23,9 +23,7 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
       } flex flex-col w-fit p-2 sm:p-4 divide-y dark:divide-slate-200/20`}
     >
       <a href={`./matches/${match.id}`}>
-        <h2 className="text-xl sm:text-2xl">
-          Round {match.roundNumber + 1} - Match {match.matchNumber + 1}
-        </h2>
+        <h2 className="text-xl sm:text-2xl">Match {match.order + 1}</h2>
       </a>
       <div className="flex flex-row justify-between py-2">
         <div
@@ -35,8 +33,8 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
             match.team1Score
           )}`}
         >
-          <span className="text-sm">{match.team1.player1.name}</span>
-          <span className="text-sm">{match.team1.player2.name}</span>
+          <span className="text-sm">{match.team1Player1.name}</span>
+          <span className="text-sm">{match.team1Player2.name}</span>
         </div>
         <div className="flex items-center">
           <span className="h-fit">vs</span>
@@ -48,8 +46,8 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
             match.team2Score
           )}`}
         >
-          <span className="text-sm">{match.team2.player1.name}</span>
-          <span className="text-sm">{match.team2.player2.name}</span>
+          <span className="text-sm">{match.team2Player1.name}</span>
+          <span className="text-sm">{match.team2Player2.name}</span>
         </div>
       </div>
     </div>

@@ -42,7 +42,6 @@ app.UseHttpsRedirection();
 app.UseWebSockets();
 
 app.AddMatchEndpoints();
-//app.AddTournamentEndpoints();
 app.AddLeagueEndpoints();
 app.AddLiveEndpoints();
 app.AddUserEndpoints();

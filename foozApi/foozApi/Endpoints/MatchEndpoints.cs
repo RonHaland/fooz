@@ -1,8 +1,6 @@
 ﻿using foozApi.DTO;
 using foozApi.Models;
-using foozApi.OldModels;
 using foozApi.Services;
-using foozApi.Storage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace foozApi.Endpoints;
@@ -15,12 +13,10 @@ public static class MatchEndpoints
             .WithTags("Matches")
             .WithOpenApi();
     }
+
     public static WebApplication AddMatchEndpoints(this WebApplication app)
     {
-        var storageService = app.Services.GetRequiredService<TableStorage>();
-        var tournamentService = app.Services.GetRequiredService<TournamentService>();
         var leagueService = app.Services.GetRequiredService<LeagueService>();
-        var liveUpdater = app.Services.GetRequiredService<LiveUpdateService>();
 
         app.MapGet("/League/{id}/Matches", async ([FromRoute] string id) =>
         {
@@ -36,20 +32,6 @@ public static class MatchEndpoints
         .WithName("Get Matches")
         .WithCommonOpenApi();
 
-        app.MapGet("/League/{id}/Progress", async (string id) =>
-        {
-            var currentMatch = await leagueService.GetLeagueProgress(id);
-            if (currentMatch == null)
-            {
-                return Results.NotFound(currentMatch);
-            }
-
-            return Results.Ok(currentMatch);
-        })
-        .WithName("Get League Progress")
-        .Produces<LeagueProgressResponse>(StatusCodes.Status200OK)
-        .WithCommonOpenApi();
-
         app.MapPut("/League/{leagueId}/Matches/{matchId}", async ([FromBody] PutMatch putMatch, [FromRoute] string leagueId, string matchId) =>
         {
             var scores = GetScores(putMatch);
@@ -61,34 +43,9 @@ public static class MatchEndpoints
         .Produces(StatusCodes.Status200OK)
         .WithCommonOpenApi();
 
-        app.MapGet("/Tournament/{tournamentId}/Matches", async ([FromRoute] string tournamentId) => 
+        app.MapGet("/League/{leagueId}/Matches/{matchId}", async ([FromRoute] string leagueId, string matchId) =>
         {
-            var result = await storageService.GetMatchesAsync(tournamentId);
-            if (result == null)
-            {
-                return Results.NotFound(result);
-            }
-            return Results.Ok(result);
-        })
-        .WithName("[OLD]Get Matches")
-        .WithCommonOpenApi();
-
-        app.MapGet("/Tournament/{tournamentId}/CurrentMatch", async ([FromRoute] string tournamentId) =>
-        {
-            var currentMatch = await tournamentService.GetCurrentMatch(tournamentId);
-            if (currentMatch == null)
-            {
-                return Results.NotFound(currentMatch);
-            }
-
-            return Results.Ok(currentMatch);
-        })
-        .WithName("Get Current Match")
-        .WithCommonOpenApi();
-
-        app.MapGet("/Tournament/{tournamentId}/Matches/{matchId}", async ([FromRoute] string tournamentId, string matchId) =>
-        {
-            var currentMatch = await tournamentService.GetCurrentMatch(tournamentId, matchId);
+            var currentMatch = await leagueService.GetMatch(leagueId, matchId);
             if (currentMatch == null)
             {
                 return Results.NotFound(currentMatch);
@@ -97,15 +54,8 @@ public static class MatchEndpoints
             return Results.Ok(currentMatch);
         })
         .WithName("Get Match by Id")
-        .WithCommonOpenApi();
-
-        app.MapPut("/Tournament/{tournamentId}/Matches/{matchId}", async ([FromBody] PutMatch putMatch, [FromRoute] string tournamentId, string matchId) =>
-        {
-            await tournamentService.UpdateMatchScore(putMatch, tournamentId, matchId);
-
-            return Results.Ok();
-        })
-        .WithName("[OLD]Update match result")
+        .Produces<Match>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
         .WithCommonOpenApi();
 
         return app;

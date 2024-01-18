@@ -1,14 +1,14 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import type { CurrentMatch, Tournament } from "~/_types/tournament";
+import type { League, LeagueProgress } from "~/_types/tournament";
 import { MatchCard, Scoreboard, TeamDisplay } from "~/components";
 import { ScoreRow } from "~/components/Scoreboard/ScoreRow";
 import { useTimer } from "~/hooks";
 import { useWebSocket } from "~/hooks/useWebSocket";
 
 const LivePage = () => {
-  const { wsConnectionEndpoint, tournament, currentMatch } =
+  const { wsConnectionEndpoint, league, progress } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const { connect, setOnMessage } = useWebSocket(wsConnectionEndpoint);
@@ -26,15 +26,15 @@ const LivePage = () => {
   } | null>(null);
 
   var team1players = [
-    currentMatch?.currentMatch?.team1.player1.id,
-    currentMatch?.currentMatch?.team1.player2.id,
+    progress?.currentMatch?.team1Player1.id,
+    progress?.currentMatch?.team1Player2.id,
   ];
   var team2players = [
-    currentMatch?.currentMatch?.team2.player1.id,
-    currentMatch?.currentMatch?.team2.player2.id,
+    progress?.currentMatch?.team2Player1.id,
+    progress?.currentMatch?.team2Player2.id,
   ];
 
-  const players = tournament?.participants
+  const players = league?.players
     .sort((a, b) => b.score - a.score)
     .map((p, i) => {
       const isTeam1 = team1players.includes(p.id);
@@ -50,7 +50,7 @@ const LivePage = () => {
       );
     });
 
-  const currentMatchItem = currentMatch?.currentMatch;
+  const currentMatchItem = progress?.currentMatch;
 
   useEffect(
     function handleTimerUpdate() {
@@ -122,12 +122,11 @@ const LivePage = () => {
         <div className="col-span-2 col-start-2">
           <div className="flex flex-col justify-center h-full gap-2">
             <h1 className="text-6xl text-center font-semibold">
-              {tournament?.name}
+              {league?.name}
             </h1>
             {currentMatchItem && (
               <h2 className="text-3xl text-center">
-                ROUND {(currentMatchItem.roundNumber ?? 0) + 1} - MATCH{" "}
-                {(currentMatchItem.matchNumber ?? 0) + 1}
+                MATCH {(currentMatchItem.order ?? 0) + 1}
               </h2>
             )}
           </div>
@@ -139,14 +138,20 @@ const LivePage = () => {
         {currentMatchItem ? (
           <div className="flex justify-center text-xl gap-24 col-span-2 md:col-start-2 md:row-start-2">
             <TeamDisplay
-              team={currentMatchItem.team1}
+              team={{
+                player1: currentMatchItem.team1Player1,
+                player2: currentMatchItem.team1Player2,
+              }}
               matchId={currentMatchItem.id}
             />
             <div className="flex flex-col justify-around items-center mt-6 gap-2">
               <span className="h-fit">VS</span>
             </div>
             <TeamDisplay
-              team={currentMatchItem.team2}
+              team={{
+                player1: currentMatchItem.team2Player1,
+                player2: currentMatchItem.team2Player2,
+              }}
               matchId={currentMatchItem.id}
               align="right"
             />
@@ -164,23 +169,11 @@ const LivePage = () => {
           </h2>
           <div className="border-t border-slate-400/20 h-1 min-w-fit w-[60%]"></div>
         </div>
-        <div className="row-start-5">
-          <h2>Previous Game</h2>
-          {currentMatch?.previousMatch && (
-            <MatchCard match={currentMatch?.previousMatch} />
-          )}
-        </div>
-        <div className="row-start-5 flex flex-col items-end mr-4">
-          <h2>Next Game</h2>
-          {currentMatch?.nextMatch && (
-            <MatchCard match={currentMatch?.nextMatch} />
-          )}
-        </div>
         <div className="p-4 m-4 rounded bg-slate-800 border border-slate-200/20 row-span-5 row-start-4 col-start-4 md:row-start-1 col-span-2 md:col-span-1 max-w-fit w-full">
-          {currentMatch?.nextMatch && (
+          {progress?.upcomingMatches && (
             <>
               <h2 className="text-center text-lg">Upcoming Game</h2>
-              <MatchCard match={currentMatch?.nextMatch} />
+              <MatchCard match={progress?.upcomingMatches[0]} />
             </>
           )}
           <div className="border-t border-slate-400/20 h-1 min-w-fit w-full"></div>
@@ -199,33 +192,28 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const wsBaseUrl = apiUrl.replace("https", "wss");
   const wsConnectionEndpoint = `${wsBaseUrl}/tournament/${id}/live`;
 
-  let tournament: Tournament | null = null;
-  let currentMatch: CurrentMatch | null = null;
+  let league: League | null = null;
+  let progress: LeagueProgress | null = null;
   try {
-    const response = await fetch(`${apiUrl}/tournament/${id}`);
+    const response = await fetch(`${apiUrl}/league/${id}`);
     const result = await response.json();
-    tournament = result as Tournament;
+    league = result as League;
 
-    const currentMatchResponse = await fetch(
-      `${apiUrl}/tournament/${id}/currentmatch`
-    );
-    const currentMatchResult = await currentMatchResponse.json();
-    currentMatch = currentMatchResult as CurrentMatch;
+    const progressResponse = await fetch(`${apiUrl}/league/${id}/progress`);
+    const progressResult = await progressResponse.json();
+    progress = progressResult as LeagueProgress;
   } catch (error) {
     console.log(error);
   }
-
-  return { wsConnectionEndpoint, tournament, currentMatch };
+  return { wsConnectionEndpoint, league, progress };
 };
 
-export const meta: MetaFunction = ({ matches, data }) => {
+export const meta: MetaFunction = ({ data }) => {
   const loaderData = data as Awaited<ReturnType<typeof loader>>;
 
-  const currentMatch = loaderData.currentMatch?.currentMatch;
+  const currentMatch = loaderData.progress?.currentMatch;
   const title = currentMatch
-    ? `Round ${(currentMatch?.roundNumber ?? 0) + 1} - Match ${
-        (currentMatch?.matchNumber ?? 0) + 1
-      }`
+    ? `Match ${(currentMatch?.order ?? 0) + 1}`
     : "Live match";
   return [{ title }];
 };

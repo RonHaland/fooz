@@ -6,10 +6,20 @@ export type Tournament = {
   rounds: Round[];
 };
 
-export type TournamentListItem = {
+export type League = {
+  id: string;
+  name: string;
+  isCompleted: boolean;
+  players: Player[];
+  matches: Match[];
+};
+
+export type LeagueListItem = {
   name: string;
   id: string;
   time: Date;
+  matchCount: number;
+  playerCount: number;
 };
 
 export type Round = {
@@ -21,21 +31,20 @@ export type Round = {
 
 export type Match = {
   id: string;
-  roundId: string;
-  matchNumber: number;
-  roundNumber: number;
+  order: number;
   isCompleted: boolean;
-  team1: Team;
-  team2: Team;
+  team1Player1: Player;
+  team1Player2: Player;
+  team2Player1: Player;
+  team2Player2: Player;
   team1Score: number;
   team2Score: number;
 };
 
 export type Team = {
-  id: string;
   player1: Player;
   player2: Player;
-  score: number;
+  score?: number;
 };
 
 export type Player = {
@@ -51,6 +60,12 @@ export type CurrentMatch = {
   previousMatch?: Match;
   nextMatch?: Match;
   isCompleted: boolean;
+};
+
+export type LeagueProgress = {
+  currentMatch?: Match;
+  completedMatches?: Match[];
+  upcomingMatches?: Match[];
 };
 
 export type PutMatch = {

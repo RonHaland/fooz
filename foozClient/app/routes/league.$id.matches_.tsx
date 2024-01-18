@@ -41,9 +41,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const tournamentId = params["id"];
   let matches: Match[] = [];
   try {
-    const matchResult = await fetch(
-      `${apiUrl}/tournament/${tournamentId}/matches`
-    );
+    const matchResult = await fetch(`${apiUrl}/league/${tournamentId}/matches`);
     matches = (await matchResult.json()) as Match[];
     return json({ matches });
   } catch (error) {

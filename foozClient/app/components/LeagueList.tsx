@@ -1,16 +1,16 @@
-import type { TournamentListItem } from "~/_types";
+import type { LeagueListItem } from "~/_types";
 import { usePagination } from "~/hooks";
 import { Pagination } from "./Pagination";
 import { LinkButton } from ".";
 
 type Props = {
-  tournaments: TournamentListItem[];
+  leagues: LeagueListItem[];
   manage?: boolean;
   pageSize?: number;
 };
 
-export const TournamentList = ({
-  tournaments,
+export const LeagueList = ({
+  leagues: tournaments,
   manage = false,
   pageSize = 10,
 }: Props) => {
@@ -19,7 +19,7 @@ export const TournamentList = ({
     tournaments
   );
 
-  const tournamentsButtons = pageItems.map((t) => (
+  const leaguesButtons = pageItems.map((t) => (
     <tr
       key={t.id}
       className="border-b border-slate-100/20 first-of-type:border-t"
@@ -55,7 +55,7 @@ export const TournamentList = ({
               <th className="w-16"></th>
             </tr>
           </thead>
-          <tbody>{tournamentsButtons}</tbody>
+          <tbody>{leaguesButtons}</tbody>
         </table>
       </div>
       <div className="max-sm:my-4 ">
