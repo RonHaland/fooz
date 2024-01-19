@@ -170,13 +170,13 @@ const LivePage = () => {
           <div className="border-t border-slate-400/20 h-1 min-w-fit w-[60%]"></div>
         </div>
         <div className="p-4 m-4 rounded bg-slate-800 border border-slate-200/20 row-span-5 row-start-4 col-start-4 md:row-start-1 col-span-2 md:col-span-1 max-w-fit w-full">
-          {progress?.upcomingMatches && (
+          {!!progress?.upcomingMatches?.length && (
             <>
               <h2 className="text-center text-lg">Upcoming Game</h2>
               <MatchCard match={progress?.upcomingMatches[0]} />
+              <div className="border-t border-slate-400/20 h-1 min-w-fit w-full"></div>
             </>
           )}
-          <div className="border-t border-slate-400/20 h-1 min-w-fit w-full"></div>
           <h2 className="text-center text-lg">Past Games</h2>
         </div>
       </div>
@@ -190,7 +190,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const id = params["id"];
   const wsBaseUrl = apiUrl.replace("https", "wss");
-  const wsConnectionEndpoint = `${wsBaseUrl}/tournament/${id}/live`;
+  const wsConnectionEndpoint = `${wsBaseUrl}/league/${id}/live`;
 
   let league: League | null = null;
   let progress: LeagueProgress | null = null;

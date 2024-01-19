@@ -17,6 +17,7 @@ public static class MatchEndpoints
     public static WebApplication AddMatchEndpoints(this WebApplication app)
     {
         var leagueService = app.Services.GetRequiredService<LeagueService>();
+        var liveService = app.Services.GetRequiredService<LiveUpdateService>();
 
         app.MapGet("/League/{id}/Matches", async ([FromRoute] string id) =>
         {
@@ -36,6 +37,7 @@ public static class MatchEndpoints
         {
             var scores = GetScores(putMatch);
             await leagueService.UpdateMatchScores(leagueId, matchId, scores[0], scores[1]);
+            await liveService.SendUpdate(leagueId);
 
             return Results.Ok();
         })

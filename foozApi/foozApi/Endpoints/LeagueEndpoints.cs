@@ -20,6 +20,9 @@ public static class LeagueEndpoints
 
         app.MapGet("/League/MatchCountOptions", (int playerCount) =>
         {
+            if (playerCount < 4) {
+                return [];    
+            }
             return leagueService.PossibleMatchCounts(playerCount);
         })
         .WithName("Get match count options")
