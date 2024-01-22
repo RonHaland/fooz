@@ -1,4 +1,5 @@
 import type { Match } from "~/_types/tournament";
+import { getCompletedColor } from "~/utils/colorUtils";
 
 type Props = {
   match: Match;
@@ -16,11 +17,11 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
 
   return (
     <div
-      className={`text-slate-800 dark:text-slate-200 rounded ${
+      className={`text-slate-800 dark:text-slate-200 w-60 rounded ${
         match.isCompleted
           ? "bg-blue-500 dark:bg-sky-900/90"
           : "bg-blue-300 dark:bg-slate-700"
-      } flex flex-col w-fit p-2 sm:p-4 divide-y dark:divide-slate-200/20`}
+      } flex flex-col p-2 sm:p-4 divide-y dark:divide-slate-200/20`}
     >
       <a href={`./matches/${match.id}`}>
         <h2 className="text-xl sm:text-2xl">Match {match.order + 1}</h2>
@@ -52,32 +53,4 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
       </div>
     </div>
   );
-};
-
-const getCompletedColor = (
-  winningTeam: number,
-  myTeam: number,
-  score: number
-) => {
-  let classColors = "";
-  const neutralColor = "border-amber-500 border bg-amber-500/20";
-  const winningColor = (score: number) => {
-    return score > 1 ? "border-green-400 border bg-green-800/50" : neutralColor;
-  };
-  const losingColor = "border-red-400 border bg-red-800/50";
-  switch (winningTeam) {
-    case 1:
-      classColors = myTeam == 1 ? winningColor(score) : losingColor;
-      break;
-    case 2:
-      classColors = myTeam == 2 ? winningColor(score) : losingColor;
-      break;
-    case 0:
-      classColors = neutralColor;
-      break;
-    default:
-      break;
-  }
-
-  return classColors;
 };

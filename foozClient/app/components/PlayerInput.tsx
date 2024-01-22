@@ -35,6 +35,7 @@ export const PlayerInput = ({
       <input
         type="text"
         value={value}
+        name={`player-${number}`}
         onChange={onUpdate}
         onBlur={onBlur}
       ></input>

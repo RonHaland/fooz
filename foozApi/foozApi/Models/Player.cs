@@ -13,7 +13,7 @@ public class Player : TableModel
     [TableIgnore, JsonIgnore]
     public IEnumerable<Match> HomeMatches => Matches.Where(m => m.Team1Player1.Id == Id || m.Team1Player2.Id == Id);
     [TableIgnore, JsonIgnore]
-    public IEnumerable<Match> AwayMatches => Matches.Where(m => m.Team1Player1.Id == Id || m.Team1Player2.Id == Id);
+    public IEnumerable<Match> AwayMatches => Matches.Where(m => m.Team2Player1.Id == Id || m.Team2Player2.Id == Id);
     [TableIgnore, JsonIgnore]
     public IEnumerable<Match> WonMatches => HomeMatches.Where(m => m.IsCompleted && m.Team1Score > m.Team2Score)
                                         .Union(AwayMatches.Where(m => m.IsCompleted && m.Team1Score < m.Team2Score));

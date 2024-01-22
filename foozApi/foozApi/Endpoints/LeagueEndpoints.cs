@@ -58,7 +58,7 @@ public static class LeagueEndpoints
             {
                 return Results.NotFound();
             }
-            return Results.Ok(leagues.Select(l => new LeaguesResponse
+            return Results.Ok(leagues.OrderByDescending(l => l.ModifiedDate).Select(l => new LeaguesResponse
             {
                 Id = l.Id,
                 MatchCount = l.Matches.Count,

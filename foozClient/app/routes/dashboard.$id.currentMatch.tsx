@@ -182,7 +182,6 @@ const CurrentMatchDashboardPage = () => {
           <input
             type="number"
             name="time"
-            defaultValue={360}
             min={0}
             max={3600}
             value={editTimerValue}
@@ -209,7 +208,6 @@ const CurrentMatchDashboardPage = () => {
           <input
             type="number"
             name="time"
-            defaultValue={360}
             min={0}
             max={3600}
             value={editOverTimerValue}

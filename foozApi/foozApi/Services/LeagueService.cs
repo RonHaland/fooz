@@ -144,6 +144,6 @@ public sealed class LeagueService
 
     public List<int> PossibleMatchCounts(int playerCount, int maxGames = 100) => GetOptions(playerCount, maxGames);
 
-    private List<int> GetOptions(int count, int max = 100) => Enumerable.Range(4, max).Where(n => count * n % 4 == 0 && count * n / 4 <= max).Select(n => n * count / 4).ToList();
+    private List<int> GetOptions(int count, int max = 100) => Enumerable.Range(1, max).Where(n => count * n % 4 == 0 && count * n / 4 <= max).Select(n => (n * count) / 4 ).ToList();
 
 }

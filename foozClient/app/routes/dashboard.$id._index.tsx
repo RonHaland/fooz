@@ -8,9 +8,9 @@ import { ScoreRow } from "~/components/Scoreboard/ScoreRow";
 const TournamentDashboardPage = () => {
   const { league } = useLoaderData<typeof loader>();
 
-  const scores = league?.players.map((p, i) => (
-    <ScoreRow key={p.id} player={p} ind={i + 1} />
-  ));
+  const scores = league?.players
+    .sort((a, b) => b.score - a.score)
+    .map((p, i) => <ScoreRow key={p.id} player={p} ind={i + 1} />);
   return (
     <div className="flex flex-col gap-8 pt-4 justify-center items-center container mx-auto">
       <h2 className="text-center text-2xl text-slate-200">{league?.name}</h2>

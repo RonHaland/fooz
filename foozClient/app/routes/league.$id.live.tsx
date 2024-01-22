@@ -52,6 +52,10 @@ const LivePage = () => {
 
   const currentMatchItem = progress?.currentMatch;
 
+  const completedMatchesCards = progress?.completedMatches
+    ?.sort((a, b) => b.order - a.order)
+    .map((m) => <MatchCard key={m.id} match={m} />);
+
   useEffect(
     function handleTimerUpdate() {
       if (timerUpdate) {
@@ -169,7 +173,7 @@ const LivePage = () => {
           </h2>
           <div className="border-t border-slate-400/20 h-1 min-w-fit w-[60%]"></div>
         </div>
-        <div className="p-4 m-4 rounded bg-slate-800 border border-slate-200/20 row-span-5 row-start-4 col-start-4 md:row-start-1 col-span-2 md:col-span-1 max-w-fit w-full">
+        <div className="p-4 m-4 rounded bg-slate-800 border border-slate-200/20 row-span-5 row-start-4 col-start-4 md:row-start-1 col-span-2 md:col-span-1 max-w-fit w-full overflow-hidden flex flex-col">
           {!!progress?.upcomingMatches?.length && (
             <>
               <h2 className="text-center text-lg">Upcoming Game</h2>
@@ -177,7 +181,12 @@ const LivePage = () => {
               <div className="border-t border-slate-400/20 h-1 min-w-fit w-full"></div>
             </>
           )}
-          <h2 className="text-center text-lg">Past Games</h2>
+          <h2 className="text-center text-lg w-80">Past Games</h2>
+          {!!completedMatchesCards && (
+            <div className="overflow-auto flex flex-col gap-2 items-center">
+              {completedMatchesCards}
+            </div>
+          )}
         </div>
       </div>
     </div>
