@@ -1,4 +1,3 @@
-using Discord.Rest;
 using foozApi.Endpoints;
 using foozApi.Services;
 using foozApi.Storage;

@@ -1,6 +1,5 @@
-﻿using Discord.Rest;
-using foozApi.OldModels;
-using foozApi.Services;
+﻿using foozApi.Services;
+using foozApi.Utils;
 
 namespace foozApi.Endpoints;
 
@@ -18,14 +17,10 @@ public static class UserEndpoints
         var userService = app.Services.GetRequiredService<UserService>();
         app.MapGet("/user/roles", async (HttpRequest request) =>
         {
-            var token = request.Headers["Authorization"].FirstOrDefault()?.Split(" ")[1];
             var result = Enumerable.Empty<string>();
             try
             {
-                await using var client = new DiscordRestClient();
-                await client.LoginAsync(Discord.TokenType.Bearer, token);
-                var user = new User(client.CurrentUser);
-                var roles = await userService.UpdateUserAndGetRoles(user);
+                var roles = await request.GetRoles(userService);
                 result = roles;
             }
             catch (Exception e)

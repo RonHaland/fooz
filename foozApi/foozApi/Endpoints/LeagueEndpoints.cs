@@ -1,6 +1,8 @@
-﻿using foozApi.DTO;
+﻿using Azure.Core;
+using foozApi.DTO;
 using foozApi.Models;
 using foozApi.Services;
+using foozApi.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace foozApi.Endpoints;
@@ -17,6 +19,7 @@ public static class LeagueEndpoints
     public static WebApplication AddLeagueEndpoints(this WebApplication app)
     {
         var leagueService = app.Services.GetRequiredService<LeagueService>();
+        var userService = app.Services.GetRequiredService<UserService>();
 
         app.MapGet("/League/MatchCountOptions", (int playerCount) =>
         {
@@ -29,8 +32,9 @@ public static class LeagueEndpoints
         .Produces(StatusCodes.Status200OK)
         .WithCommonOpenApi();
 
-        app.MapPost("/League", async ([FromBody] PostLeague body) =>
+        app.MapPost("/League", async ([FromBody] PostLeague body, HttpRequest request) =>
         {
+            if (!await request.IsAdmin(userService)) throw new UnauthorizedAccessException();
             return await leagueService.CreateLeague(body.Name, body.Players, body.MatchCount);
         })
         .WithName("Post League")
@@ -86,8 +90,9 @@ public static class LeagueEndpoints
         .Produces<LeagueProgressResponse>(StatusCodes.Status200OK)
         .WithCommonOpenApi();
 
-        app.MapDelete("/League/{id}", async (string id) =>
+        app.MapDelete("/League/{id}", async (string id, HttpRequest request) =>
         {
+            if (!await request.IsAdmin(userService)) throw new UnauthorizedAccessException();
             await leagueService.DeleteLeague(id);
         })
         .WithName("Delete League")

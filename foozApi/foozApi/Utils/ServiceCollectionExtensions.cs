@@ -13,11 +13,6 @@ public static class ServiceCollectionExtensions
         tableContext
                 .ConfigureConnectionString(connstr)
                 .RegisterTable<User>()
-                .RegisterTable<Tournament>()
-                .RegisterTable<Round>()
-                .RegisterTable<OldModels.Match>()
-                .RegisterTable<Team>()
-                .RegisterTable<Participant>()
                 .RegisterTable<League>()
                 .RegisterTable<Models.Match>()
                 .RegisterTable<Player>();

@@ -177,7 +177,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   var response = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
-      Authentication: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
     body: jsonBody,

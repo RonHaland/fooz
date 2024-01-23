@@ -1,6 +1,7 @@
 ﻿using foozApi.DTO;
 using foozApi.Models;
 using foozApi.Services;
+using foozApi.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace foozApi.Endpoints;
@@ -17,7 +18,8 @@ public static class MatchEndpoints
     public static WebApplication AddMatchEndpoints(this WebApplication app)
     {
         var leagueService = app.Services.GetRequiredService<LeagueService>();
-        var liveService = app.Services.GetRequiredService<LiveUpdateService>();
+        var liveService = app.Services.GetRequiredService<LiveUpdateService>(); 
+        var userService = app.Services.GetRequiredService<UserService>();
 
         app.MapGet("/League/{id}/Matches", async ([FromRoute] string id) =>
         {
@@ -33,8 +35,9 @@ public static class MatchEndpoints
         .WithName("Get Matches")
         .WithCommonOpenApi();
 
-        app.MapPut("/League/{leagueId}/Matches/{matchId}", async ([FromBody] PutMatch putMatch, [FromRoute] string leagueId, string matchId) =>
+        app.MapPut("/League/{leagueId}/Matches/{matchId}", async ([FromBody] PutMatch putMatch, [FromRoute] string leagueId, string matchId, HttpRequest request) =>
         {
+            if (!await request.IsAdmin(userService)) throw new UnauthorizedAccessException();
             var scores = GetScores(putMatch);
             await leagueService.UpdateMatchScores(leagueId, matchId, scores[0], scores[1]);
             await liveService.SendUpdate(leagueId);

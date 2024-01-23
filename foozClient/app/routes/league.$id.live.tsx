@@ -24,6 +24,7 @@ const LivePage = () => {
     update: string;
     amount: string;
   } | null>(null);
+  const [ot, setOt] = useState(120);
 
   var team1players = [
     progress?.currentMatch?.team1Player1.id,
@@ -89,6 +90,7 @@ const LivePage = () => {
           case "EditOvertime":
           default:
             console.log(update);
+            setOt(Number.parseInt(amount));
             break;
         }
 
@@ -118,6 +120,7 @@ const LivePage = () => {
     };
 
     setOnMessage(() => onMessage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -168,8 +171,17 @@ const LivePage = () => {
         <div className="flex flex-col justify-center items-center col-span-2 gap-16 bg-slate-950/20 mr-4">
           <div className="border-t border-slate-400/20 h-1 min-w-fit w-[60%]"></div>
           <h2 className="text-6xl text-center w-fit">
-            {timeLeft < 0 ? "OVERTIMER: " : "TIMER: "} <br />
-            {timeLeft < 0 ? (timeLeft + 120).toFixed(0) : timeLeft.toFixed(0)}
+            {timeLeft < 0
+              ? timeLeft + ot < 0
+                ? "GAME OVER"
+                : "OVERTIMER: "
+              : "TIMER: "}{" "}
+            <br />
+            {timeLeft < 0
+              ? timeLeft + ot < 0
+                ? ""
+                : (timeLeft + ot).toFixed(0)
+              : timeLeft.toFixed(0)}
           </h2>
           <div className="border-t border-slate-400/20 h-1 min-w-fit w-[60%]"></div>
         </div>
@@ -177,7 +189,9 @@ const LivePage = () => {
           {!!progress?.upcomingMatches?.length && (
             <>
               <h2 className="text-center text-lg">Upcoming Game</h2>
-              <MatchCard match={progress?.upcomingMatches[0]} />
+              <div className="flex flex-col gap-2 items-center m-2">
+                <MatchCard match={progress?.upcomingMatches[0]} />
+              </div>
               <div className="border-t border-slate-400/20 h-1 min-w-fit w-full"></div>
             </>
           )}

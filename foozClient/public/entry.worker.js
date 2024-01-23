@@ -1961,6 +1961,13 @@ var require_auth_discord_callback = __commonJS({
   }
 });
 
+// routes-module:routes/dashboard.$id.matches.tsx?worker
+var require_dashboard_id_matches = __commonJS({
+  "routes-module:routes/dashboard.$id.matches.tsx?worker"(exports, module) {
+    module.exports = {};
+  }
+});
+
 // routes-module:routes/dashboard.$id._index.tsx?worker
 var require_dashboard_id_index = __commonJS({
   "routes-module:routes/dashboard.$id._index.tsx?worker"(exports, module) {
@@ -2003,6 +2010,13 @@ var require_api_timer_id = __commonJS({
   }
 });
 
+// routes-module:routes/dashboard.$id.tsx?worker
+var require_dashboard_id = __commonJS({
+  "routes-module:routes/dashboard.$id.tsx?worker"(exports, module) {
+    module.exports = {};
+  }
+});
+
 // routes-module:routes/auth.discord.tsx?worker
 var require_auth_discord = __commonJS({
   "routes-module:routes/auth.discord.tsx?worker"(exports, module) {
@@ -2020,13 +2034,6 @@ var require_league_id = __commonJS({
 // routes-module:routes/dashboard.tsx?worker
 var require_dashboard = __commonJS({
   "routes-module:routes/dashboard.tsx?worker"(exports, module) {
-    module.exports = {};
-  }
-});
-
-// routes-module:routes/create_.tsx?worker
-var require_create = __commonJS({
-  "routes-module:routes/create_.tsx?worker"(exports, module) {
     module.exports = {};
   }
 });
@@ -6582,24 +6589,25 @@ var route3 = __toESM(require_dashboard_id_currentMatch());
 var route4 = __toESM(require_league_id_currentmatch());
 var route5 = __toESM(require_manifest_webmanifest());
 var route6 = __toESM(require_auth_discord_callback());
-var route7 = __toESM(require_dashboard_id_index());
-var route8 = __toESM(require_league_id_matches());
-var route9 = __toESM(require_dashboard_create());
-var route10 = __toESM(require_dashboard_index());
-var route11 = __toESM(require_league_id_live());
-var route12 = __toESM(require_api_timer_id());
-var route13 = __toESM(require_auth_discord());
-var route14 = __toESM(require_league_id());
-var route15 = __toESM(require_dashboard());
-var route16 = __toESM(require_create());
-var route17 = __toESM(require_league());
-var route18 = __toESM(require_logout());
-var route19 = __toESM(require_index());
-var route20 = __toESM(require_login());
-var route21 = __toESM(require_dev());
+var route7 = __toESM(require_dashboard_id_matches());
+var route8 = __toESM(require_dashboard_id_index());
+var route9 = __toESM(require_league_id_matches());
+var route10 = __toESM(require_dashboard_create());
+var route11 = __toESM(require_dashboard_index());
+var route12 = __toESM(require_league_id_live());
+var route13 = __toESM(require_api_timer_id());
+var route14 = __toESM(require_dashboard_id());
+var route15 = __toESM(require_auth_discord());
+var route16 = __toESM(require_league_id());
+var route17 = __toESM(require_dashboard());
+var route18 = __toESM(require_league());
+var route19 = __toESM(require_logout());
+var route20 = __toESM(require_index());
+var route21 = __toESM(require_login());
+var route22 = __toESM(require_dev());
 
 // assets-module:@remix-pwa/dev?assets
-var assets = ["/build/__remix_entry_dev-UDQHAH5V.js", "/build/root-ZNAZ4UZ3.js", "/build/manifest-A01583B0.js", "/build/entry.client-ILOJBVAJ.js", "/build/_assets\\tailwind-HE7EGFAP.css", "/build/_shared\\runtime-GC7QIU56.js", "/build/_shared\\remix_hmr-MTXUMIYU.js", "/build/_shared\\react-dom-BEFB7ICU.js", "/build/_shared\\react-3OYUNTOK.js", "/build/_shared\\jsx-runtime-7NXSP56X.js", "/build/_shared\\jsx-dev-runtime-RDH4Y5YT.js", "/build/_shared\\esm-GQJKIQZV.js", "/build/_shared\\client-DFZR44C7.js", "/build/_shared\\chunk-ZWGWGGVF.js", "/build/_shared\\chunk-Z26UC26W.js", "/build/_shared\\chunk-XU7DNSPJ.js", "/build/_shared\\chunk-W7IDH6CU.js", "/build/_shared\\chunk-VJAR6R4I.js", "/build/_shared\\chunk-UWV35TSL.js", "/build/_shared\\chunk-USRD2KD2.js", "/build/_shared\\chunk-ULB53DNN.js", "/build/_shared\\chunk-R4ZMFM2E.js", "/build/_shared\\chunk-QRX5DMDR.js", "/build/_shared\\chunk-PNG5AS42.js", "/build/_shared\\chunk-NIJJNXBP.js", "/build/_shared\\chunk-JSCKBFOW.js", "/build/_shared\\chunk-J32XGDWN.js", "/build/_shared\\chunk-HK3BZCHV.js", "/build/_shared\\chunk-GIAAE3CH.js", "/build/_shared\\chunk-GCET5L4O.js", "/build/_shared\\chunk-G7CHZRZX.js", "/build/_shared\\chunk-CXYC7TYH.js", "/build/_shared\\chunk-BOXFZXVX.js", "/build/_shared\\chunk-7QGB4JLT.js", "/build/_shared\\chunk-6L4CLWM3.js", "/build/_shared\\chunk-6I4KKVRQ.js", "/build/_shared\\chunk-55SMHMRR.js", "/build/routes\\_index-O2WCDUBY.js", "/build/routes\\manifest[.]webmanifest-J3KYYY3Q.js", "/build/routes\\logout-GGSXPJWV.js", "/build/routes\\login-LIAEQAB6.js", "/build/routes\\league_-ETDOGWYW.js", "/build/routes\\league.$id._-BYSFCT32.js", "/build/routes\\league.$id.matches_-7RVBLLTO.js", "/build/routes\\league.$id.matches.$matchId-S2MKQF7Q.js", "/build/routes\\league.$id.live-5PJMOLCA.js", "/build/routes\\league.$id.currentmatch-RC7F6VAL.js", "/build/routes\\dev-R7YQZIEM.js", "/build/routes\\dashboard._index-NXUMPKTX.js", "/build/routes\\dashboard.create-YX4755IT.js", "/build/routes\\dashboard.$id._index-XVIXJ4ED.js", "/build/routes\\dashboard.$id.matches-FXD2T6IU.js", "/build/routes\\dashboard.$id.currentMatch-OSK7Z4MI.js", "/build/routes\\dashboard-4LN5AVZR.js", "/build/routes\\create_-Z4NLWTGV.js", "/build/routes\\auth.discord.callback-JXEB4YOX.js", "/build/routes\\auth.discord-CRIW2GRS.js", "/build/routes\\api.timer.$id-N7YNZ2TC.js", "/build/routes\\api.matchcounts.$playerCount-5PKYLHOY.js"];
+var assets = ["/build/__remix_entry_dev-BOK2BYZI.js", "/build/root-HDZODS4S.js", "/build/manifest-53F80F71.js", "/build/entry.client-6WRLCB4U.js", "/build/_assets\\tailwind-JFVFNE42.css", "/build/_shared\\runtime-GC7QIU56.js", "/build/_shared\\remix_hmr-MTXUMIYU.js", "/build/_shared\\react-dom-BEFB7ICU.js", "/build/_shared\\react-3OYUNTOK.js", "/build/_shared\\jsx-runtime-7NXSP56X.js", "/build/_shared\\jsx-dev-runtime-RDH4Y5YT.js", "/build/_shared\\esm-GQJKIQZV.js", "/build/_shared\\client-DFZR44C7.js", "/build/_shared\\chunk-ZWGWGGVF.js", "/build/_shared\\chunk-XU7DNSPJ.js", "/build/_shared\\chunk-W7IDH6CU.js", "/build/_shared\\chunk-VJAR6R4I.js", "/build/_shared\\chunk-UWV35TSL.js", "/build/_shared\\chunk-ULB53DNN.js", "/build/_shared\\chunk-TJECIFOG.js", "/build/_shared\\chunk-QRX5DMDR.js", "/build/_shared\\chunk-QEKPCRHI.js", "/build/_shared\\chunk-PNG5AS42.js", "/build/_shared\\chunk-LEMI7MU5.js", "/build/_shared\\chunk-JSCKBFOW.js", "/build/_shared\\chunk-HWMYAFHA.js", "/build/_shared\\chunk-HK3BZCHV.js", "/build/_shared\\chunk-GIAAE3CH.js", "/build/_shared\\chunk-G7CHZRZX.js", "/build/_shared\\chunk-EYRXF47Q.js", "/build/_shared\\chunk-DY5UB5V4.js", "/build/_shared\\chunk-DMYWJISG.js", "/build/_shared\\chunk-CXYC7TYH.js", "/build/_shared\\chunk-BOXFZXVX.js", "/build/_shared\\chunk-AXLSQREZ.js", "/build/_shared\\chunk-7J2OXGJI.js", "/build/_shared\\chunk-4JBLMHSS.js", "/build/routes\\_index-CYKE5ZH4.js", "/build/routes\\manifest[.]webmanifest-J3KYYY3Q.js", "/build/routes\\logout-GGSXPJWV.js", "/build/routes\\login-SREQFAKV.js", "/build/routes\\league_-UOX3A4M7.js", "/build/routes\\league.$id._-RNT7KOX4.js", "/build/routes\\league.$id.matches_-OL2SH7ZN.js", "/build/routes\\league.$id.matches.$matchId-WVSUJWUD.js", "/build/routes\\league.$id.live-WINPJ2CP.js", "/build/routes\\league.$id.currentmatch-5CZZPXWG.js", "/build/routes\\dev-2OVCQ56E.js", "/build/routes\\dashboard._index-5PSYBHKD.js", "/build/routes\\dashboard.create-NBE7U2DT.js", "/build/routes\\dashboard.$id._index-WWFGOLJN.js", "/build/routes\\dashboard.$id.matches-6LAB65OQ.js", "/build/routes\\dashboard.$id.currentMatch-YJFOS4SM.js", "/build/routes\\dashboard.$id-ZZAVEFFI.js", "/build/routes\\dashboard-ZOG7EK6J.js", "/build/routes\\create_-OXKIUXT3.js", "/build/routes\\auth.discord.callback-JXEB4YOX.js", "/build/routes\\auth.discord-CRIW2GRS.js", "/build/routes\\api.timer.$id-N7YNZ2TC.js", "/build/routes\\api.matchcounts.$playerCount-5PKYLHOY.js"];
 
 // entry-module:@remix-pwa/build/magic
 var routes = {
@@ -6629,8 +6637,8 @@ var routes = {
   },
   "routes/dashboard.$id.currentMatch": {
     id: "routes/dashboard.$id.currentMatch",
-    parentId: "routes/dashboard",
-    path: ":id/currentMatch",
+    parentId: "routes/dashboard.$id",
+    path: "currentMatch",
     index: void 0,
     caseSensitive: void 0,
     module: route3
@@ -6659,13 +6667,21 @@ var routes = {
     caseSensitive: void 0,
     module: route6
   },
-  "routes/dashboard.$id._index": {
-    id: "routes/dashboard.$id._index",
-    parentId: "routes/dashboard",
-    path: ":id",
-    index: true,
+  "routes/dashboard.$id.matches": {
+    id: "routes/dashboard.$id.matches",
+    parentId: "routes/dashboard.$id",
+    path: "matches",
+    index: void 0,
     caseSensitive: void 0,
     module: route7
+  },
+  "routes/dashboard.$id._index": {
+    id: "routes/dashboard.$id._index",
+    parentId: "routes/dashboard.$id",
+    path: void 0,
+    index: true,
+    caseSensitive: void 0,
+    module: route8
   },
   "routes/league.$id.matches_": {
     id: "routes/league.$id.matches_",
@@ -6673,7 +6689,7 @@ var routes = {
     path: "league/:id/matches",
     index: void 0,
     caseSensitive: void 0,
-    module: route8
+    module: route9
   },
   "routes/dashboard.create": {
     id: "routes/dashboard.create",
@@ -6681,7 +6697,7 @@ var routes = {
     path: "create",
     index: void 0,
     caseSensitive: void 0,
-    module: route9
+    module: route10
   },
   "routes/dashboard._index": {
     id: "routes/dashboard._index",
@@ -6689,7 +6705,7 @@ var routes = {
     path: void 0,
     index: true,
     caseSensitive: void 0,
-    module: route10
+    module: route11
   },
   "routes/league.$id.live": {
     id: "routes/league.$id.live",
@@ -6697,7 +6713,7 @@ var routes = {
     path: "league/:id/live",
     index: void 0,
     caseSensitive: void 0,
-    module: route11
+    module: route12
   },
   "routes/api.timer.$id": {
     id: "routes/api.timer.$id",
@@ -6705,7 +6721,15 @@ var routes = {
     path: "api/timer/:id",
     index: void 0,
     caseSensitive: void 0,
-    module: route12
+    module: route13
+  },
+  "routes/dashboard.$id": {
+    id: "routes/dashboard.$id",
+    parentId: "routes/dashboard",
+    path: ":id",
+    index: void 0,
+    caseSensitive: void 0,
+    module: route14
   },
   "routes/auth.discord": {
     id: "routes/auth.discord",
@@ -6713,7 +6737,7 @@ var routes = {
     path: "auth/discord",
     index: void 0,
     caseSensitive: void 0,
-    module: route13
+    module: route15
   },
   "routes/league.$id._": {
     id: "routes/league.$id._",
@@ -6721,7 +6745,7 @@ var routes = {
     path: "league/:id",
     index: void 0,
     caseSensitive: void 0,
-    module: route14
+    module: route16
   },
   "routes/dashboard": {
     id: "routes/dashboard",
@@ -6729,15 +6753,7 @@ var routes = {
     path: "dashboard",
     index: void 0,
     caseSensitive: void 0,
-    module: route15
-  },
-  "routes/create_": {
-    id: "routes/create_",
-    parentId: "root",
-    path: "create",
-    index: void 0,
-    caseSensitive: void 0,
-    module: route16
+    module: route17
   },
   "routes/league_": {
     id: "routes/league_",
@@ -6745,7 +6761,7 @@ var routes = {
     path: "league",
     index: void 0,
     caseSensitive: void 0,
-    module: route17
+    module: route18
   },
   "routes/logout": {
     id: "routes/logout",
@@ -6753,7 +6769,7 @@ var routes = {
     path: "logout",
     index: void 0,
     caseSensitive: void 0,
-    module: route18
+    module: route19
   },
   "routes/_index": {
     id: "routes/_index",
@@ -6761,7 +6777,7 @@ var routes = {
     path: void 0,
     index: true,
     caseSensitive: void 0,
-    module: route19
+    module: route20
   },
   "routes/login": {
     id: "routes/login",
@@ -6769,7 +6785,7 @@ var routes = {
     path: "login",
     index: void 0,
     caseSensitive: void 0,
-    module: route20
+    module: route21
   },
   "routes/dev": {
     id: "routes/dev",
@@ -6777,7 +6793,7 @@ var routes = {
     path: "dev",
     index: void 0,
     caseSensitive: void 0,
-    module: route21
+    module: route22
   }
 };
 var entry = { module: entry_worker_exports };

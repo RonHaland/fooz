@@ -1,6 +1,6 @@
 import { LiveReload, useSWEffect } from "@remix-pwa/sw";
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -14,6 +14,10 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   { rel: "stylesheet", href: tailwindCssUrl },
 ];
+
+export const meta: MetaFunction = () => {
+  return [{ title: "Fooz App" }, { name: "description", content: "Fooz app" }];
+};
 
 export default function App() {
   useSWEffect();

@@ -1,11 +1,14 @@
 ﻿using AzureTableContext;
+using Discord.Rest;
 using foozApi.OldModels;
+using System.Runtime.Caching;
 
 namespace foozApi.Services;
 
 public class UserService
 {
     private readonly TableContext _tableContext;
+    private readonly MemoryCache _cache = new("TokenCache");
 
     public UserService(TableContext tableContext)
     {
@@ -24,6 +27,24 @@ public class UserService
         await _tableContext.Save(user);
 
         return user.Roles;
+    }
+
+    public async Task<User> GetUserFromToken(string userToken)
+    {
+        var cachedUser = _cache.Get(userToken);
+
+        if (cachedUser != null)
+        {
+            return (User)cachedUser;
+        }
+
+        await using var client = new DiscordRestClient();
+        await client.LoginAsync(Discord.TokenType.Bearer, userToken);
+        var user = new User(client.CurrentUser);
+
+        _cache.Set(userToken, user, DateTimeOffset.UtcNow.AddMinutes(30));
+
+        return user;
     }
 }
 
