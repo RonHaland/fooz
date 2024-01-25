@@ -1,6 +1,6 @@
 ﻿using AzureTableContext;
 using Discord.Rest;
-using foozApi.OldModels;
+using foozApi.Models;
 using System.Runtime.Caching;
 
 namespace foozApi.Services;

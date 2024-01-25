@@ -1,6 +1,5 @@
 using foozApi.Endpoints;
 using foozApi.Services;
-using foozApi.Storage;
 using foozApi.Utils;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json.Serialization;
@@ -13,8 +12,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
-builder.Services.AddSingleton<TableStorage>();
-builder.Services.AddSingleton<TournamentService>();
 builder.Services.AddSingleton<LeagueService>();
 builder.Services.AddSingleton<LiveUpdateService>();
 builder.Services.AddSingleton<UserService>();

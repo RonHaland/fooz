@@ -2,7 +2,7 @@
 using AzureTableContext.Attributes;
 using Discord.Rest;
 
-namespace foozApi.OldModels;
+namespace foozApi.Models;
 
 [TableName("Users")]
 public class User : TableModel

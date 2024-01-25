@@ -1,7 +1,8 @@
 import type { LeagueListItem } from "~/_types";
 import { usePagination } from "~/hooks";
 import { Pagination } from "./Pagination";
-import { LinkButton } from ".";
+import { ActionButton, LinkButton } from ".";
+import { Form, Link } from "@remix-run/react";
 
 type Props = {
   leagues: LeagueListItem[];
@@ -26,9 +27,12 @@ export const LeagueList = ({
     >
       <td className="p-1 sm:py-3">
         <div className="flex flex-col text-slate-300">
-          <span className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden h-6">
+          <Link
+            to={`./${t.id}`}
+            className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden h-6"
+          >
             {t.name}
-          </span>
+          </Link>
           <span className="sm:hidden">
             {new Date(t.time).toLocaleDateString()}
           </span>
@@ -38,8 +42,23 @@ export const LeagueList = ({
         {new Date(t.time).toLocaleDateString()}
       </td>
       <td className="pl-1">
-        <LinkButton href={`./${t.id}`}>{manage ? "Manage" : "Go"}</LinkButton>
+        <div>
+          <LinkButton href={`./${t.id}`}>{manage ? "Manage" : "Go"}</LinkButton>
+        </div>
       </td>
+      {manage && (
+        <td className="pl-1">
+          <Form method="POST">
+            <div>
+              <ActionButton colorCode="Alert" submit>
+                <input type="hidden" name="id" value={t.id} />
+                <input type="hidden" name="name" value={t.name} />
+                {"Delete"}
+              </ActionButton>
+            </div>
+          </Form>
+        </td>
+      )}
     </tr>
   ));
 
@@ -52,6 +71,7 @@ export const LeagueList = ({
             <tr>
               <th className="w-60 sm:w-60"></th>
               <th className="hidden sm:block sm:w-24"></th>
+              <th className="w-16"></th>
               <th className="w-16"></th>
             </tr>
           </thead>

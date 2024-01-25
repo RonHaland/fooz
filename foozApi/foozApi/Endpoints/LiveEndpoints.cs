@@ -1,6 +1,5 @@
 ﻿using foozApi.DTO;
 using foozApi.Services;
-using foozApi.Storage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace foozApi.Endpoints;
@@ -15,8 +14,6 @@ public static class LiveEndpoints
     }
     public static WebApplication AddLiveEndpoints(this WebApplication app)
     {
-        var storageService = app.Services.GetRequiredService<TableStorage>();
-        var tournamentService = app.Services.GetRequiredService<TournamentService>();
         var liveUpdater = app.Services.GetRequiredService<LiveUpdateService>();
 
         app.Map("/League/{id}/live", async (string id, HttpContext context) =>

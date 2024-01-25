@@ -1,6 +1,5 @@
 ﻿using AzureTableContext;
 using foozApi.Models;
-using foozApi.OldModels;
 
 namespace foozApi.Utils;
 
