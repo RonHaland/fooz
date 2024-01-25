@@ -7,14 +7,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
   const update = await request.json();
 
-  const result = await fetch(
-    `${apiUrl}/Tournament/${tournamentId}/live/timer`,
-    {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(update),
-    }
-  );
+  const result = await fetch(`${apiUrl}/league/${tournamentId}/live/timer`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(update),
+  });
 
   console.log(result);
   return json({});

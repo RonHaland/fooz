@@ -100,7 +100,7 @@ const PaginationArrow = ({
 }: ArrowProps) => {
   const arrow = direction === "back" ? "<" : ">";
   const className = `flex flex-col justify-center rounded-full w-8 h-8 text-center text-lg ${
-    enabled ? "cursor-pointer" : "cursor-default"
+    enabled ? "cursor-pointer" : "cursor-default text-slate-400/20"
   }`;
 
   return enabled ? (

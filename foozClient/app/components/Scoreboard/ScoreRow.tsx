@@ -3,7 +3,7 @@ import type { Player } from "~/_types/tournament";
 type Props = {
   player?: Player;
   ind?: number;
-  highlightColor?: "yellow" | "green" | "orange";
+  highlightColor?: "yellow" | "purple" | "cyan";
 };
 
 export const ScoreRow = ({ player, ind, highlightColor }: Props) => {
@@ -12,10 +12,10 @@ export const ScoreRow = ({ player, ind, highlightColor }: Props) => {
       className={`border-b border-slate-100/20 text-center ${
         highlightColor == "yellow"
           ? "bg-yellow-300/20"
-          : highlightColor == "green"
-          ? "bg-green-400/20"
-          : highlightColor == "orange"
-          ? "bg-orange-400/20"
+          : highlightColor == "purple"
+          ? "bg-fuchsia-400/20"
+          : highlightColor == "cyan"
+          ? "bg-cyan-400/20"
           : ""
       }`}
     >

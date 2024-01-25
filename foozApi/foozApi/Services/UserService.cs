@@ -1,35 +1,50 @@
-﻿using Azure.Data.Tables;
+﻿using AzureTableContext;
+using Discord.Rest;
 using foozApi.Models;
-using foozApi.Storage.Entities;
-using System.Text.Json;
+using System.Runtime.Caching;
 
 namespace foozApi.Services;
 
 public class UserService
 {
-    public UserService(IConfiguration config)
-    {
-        var connectionString = config.GetValue<string>("TableConnectionString");
+    private readonly TableContext _tableContext;
+    private readonly MemoryCache _cache = new("TokenCache");
 
-        UserClient = new TableClient(connectionString, "Users");
-        UserClient.CreateIfNotExists();
+    public UserService(TableContext tableContext)
+    {
+        _tableContext = tableContext;
     }
 
-    public TableClient UserClient { get; private set; }
 
     public async Task<IEnumerable<string>> UpdateUserAndGetRoles(User user)
     {
-        var userEntity = new UserEntity(user);
-        var existing = await UserClient.GetEntityIfExistsAsync<UserEntity>(userEntity.PartitionKey, userEntity.RowKey);
-        if (existing != null && existing.HasValue)
+        var existingUsers = await _tableContext.QueryAsync<User>($"PartitionKey eq '{user.PartitionKey}' and RowKey eq '{user.Id}'");
+        if (existingUsers != null && existingUsers.Any())
         {
-            userEntity.Roles = existing.Value.Roles;
-            userEntity.ETag = existing.Value.ETag;
+            var fetchedUser = existingUsers.First();
+            user.Roles = fetchedUser.Roles;
         }
-        var roles = JsonSerializer.Deserialize<List<string>>(userEntity.Roles) ?? new List<string>();
-        await UserClient.UpsertEntityAsync(userEntity);
+        await _tableContext.Save(user);
 
-        return roles;
+        return user.Roles;
+    }
+
+    public async Task<User> GetUserFromToken(string userToken)
+    {
+        var cachedUser = _cache.Get(userToken);
+
+        if (cachedUser != null)
+        {
+            return (User)cachedUser;
+        }
+
+        await using var client = new DiscordRestClient();
+        await client.LoginAsync(Discord.TokenType.Bearer, userToken);
+        var user = new User(client.CurrentUser);
+
+        _cache.Set(userToken, user, DateTimeOffset.UtcNow.AddMinutes(30));
+
+        return user;
     }
 }
 

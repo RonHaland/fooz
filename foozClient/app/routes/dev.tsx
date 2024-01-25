@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ActionButton } from "~/components";
 import { useWebSocket } from "~/hooks/useWebSocket";
 import type { LoaderFunctionArgs } from "react-router";
-import { useLoaderData } from "@remix-run/react";
+import { redirect, useLoaderData } from "@remix-run/react";
 
 const DevPage = () => {
   const { apiUrl } = useLoaderData<typeof loader>();
@@ -31,5 +31,6 @@ const DevPage = () => {
 export default DevPage;
 
 export const loader = ({ request, params }: LoaderFunctionArgs) => {
+  if (process.env.NODE_ENV == "production") throw redirect("/");
   return { apiUrl: process.env.API_URL ?? "" };
 };

@@ -11,7 +11,7 @@ export const TournamentNavBar = ({ children }: Props) => {
   return (
     <div className="w-full h-fit flex flex-row justify-between mb-4 gap-1">
       <div className="flex flex-row">
-        <LinkButton href={`/tournament/${tournamendId}`}>
+        <LinkButton href={`/league/${tournamendId}`}>
           Back to tournament
         </LinkButton>
       </div>

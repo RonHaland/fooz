@@ -2,7 +2,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useLoaderData, useParams } from "@remix-run/react";
 import { createRef, useState } from "react";
-import type { CurrentMatch, PutMatch, WinType } from "~/_types";
+import type { LeagueProgress, PutMatch, WinType } from "~/_types";
 import { ActionButton } from "~/components";
 import { MatchInfo } from "~/components/MatchInfo";
 import { AltModal } from "~/components/Modal/AltModal";
@@ -17,7 +17,7 @@ const CurrentMatchDashboardPage = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [editTimerValue, setEditTimerValue] = useState(360);
-  const [editOverTimerValue, setEditOverTimerValue] = useState(360);
+  const [editOverTimerValue, setEditOverTimerValue] = useState(200);
 
   const editModalRef = createRef<HTMLDialogElement>();
   const editModal2Ref = createRef<HTMLDialogElement>();
@@ -103,8 +103,7 @@ const CurrentMatchDashboardPage = () => {
       {currentMatch && (
         <div className="flex flex-col justify-center items-center gap-4">
           <h2 className="text-center text-slate-200 text-3xl sm:text-6xl w-fit">
-            Round {1 + (currentMatch.roundNumber ?? 0)} - Match{" "}
-            {1 + (currentMatch.matchNumber ?? 0)}
+            Match {1 + (currentMatch.order ?? 0)}
           </h2>
           <MatchInfo currentMatch={currentMatch} />
           <div>
@@ -183,7 +182,6 @@ const CurrentMatchDashboardPage = () => {
           <input
             type="number"
             name="time"
-            defaultValue={360}
             min={0}
             max={3600}
             value={editTimerValue}
@@ -205,7 +203,34 @@ const CurrentMatchDashboardPage = () => {
           </div>
         </div>
       </AltModal>
-      <AltModal ref={editModal2Ref}>MODAL 2</AltModal>
+      <AltModal ref={editModal2Ref}>
+        <div className="flex flex-col gap-4">
+          <input
+            type="number"
+            name="time"
+            min={0}
+            max={3600}
+            value={editOverTimerValue}
+            onChange={(e) =>
+              setEditOverTimerValue(
+                minMaxValue(Number.parseInt(e.target.value), 0, 900)
+              )
+            }
+            className="rounded px-2 py-1 bg-slate-100 "
+          ></input>
+          <div className="w-full flex flex-row justify-between">
+            <ActionButton onClick={handleOverTimerEdit} colorCode="Success">
+              Submit
+            </ActionButton>
+            <ActionButton
+              onClick={() => editModal2Ref.current?.close()}
+              colorCode="Alert"
+            >
+              Cancel
+            </ActionButton>
+          </div>
+        </div>
+      </AltModal>
     </div>
   );
 };
@@ -215,10 +240,10 @@ export default CurrentMatchDashboardPage;
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const tournamentId = params["id"];
-  let current: CurrentMatch | null = null;
+  let current: LeagueProgress | null = null;
   try {
     const matchResult = await fetch(
-      `${apiUrl}/tournament/${tournamentId}/CurrentMatch`
+      `${apiUrl}/league/${tournamentId}/progress`
     );
     current = await matchResult.json();
   } catch (error) {
@@ -247,7 +272,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     winType: type,
   } as PutMatch;
   const result = await fetch(
-    `${apiUrl}/Tournament/${tournamentId}/Matches/${matchId}`,
+    `${apiUrl}/league/${tournamentId}/matches/${matchId}`,
     {
       method: "PUT",
       headers: {

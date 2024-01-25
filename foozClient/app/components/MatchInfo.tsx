@@ -8,12 +8,21 @@ type Props = {
 export const MatchInfo = ({ currentMatch }: Props) => {
   return (
     <div className="flex justify-between my-8 gap-24">
-      <TeamDisplay team={currentMatch.team1} matchId={currentMatch.id} />
+      <TeamDisplay
+        team={{
+          player1: currentMatch.team1Player1,
+          player2: currentMatch.team1Player2,
+        }}
+        matchId={currentMatch.id}
+      />
       <div className="flex flex-col justify-around items-center mt-6 gap-2">
         <span className="h-fit">VS</span>
       </div>
       <TeamDisplay
-        team={currentMatch.team2}
+        team={{
+          player1: currentMatch.team2Player1,
+          player2: currentMatch.team2Player2,
+        }}
         matchId={currentMatch.id}
         align="right"
       />

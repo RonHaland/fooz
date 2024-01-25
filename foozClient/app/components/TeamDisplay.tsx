@@ -12,7 +12,7 @@ export const TeamDisplay = ({
   const leftAligned = align == "left";
   return (
     <div className="flex flex-row items-center gap-4">
-      <div className={`order-2 ${leftAligned ? `text-left` : "text-right"}`}>
+      <div className={`order-2 ${leftAligned ? `text-left` : "text-right"} `}>
         {!!team && (
           <>
             <h3 className="text-lg">{team.player1.name}</h3>

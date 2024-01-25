@@ -1,14 +1,15 @@
-﻿using Discord.Rest;
-using foozApi.Storage.Entities;
-using System.Text.Json;
+﻿using AzureTableContext;
+using AzureTableContext.Attributes;
+using Discord.Rest;
 
 namespace foozApi.Models;
 
-public class User
+[TableName("Users")]
+public class User : TableModel
 {
     public User()
     {
-        
+
     }
 
     public User(RestSelfUser user)
@@ -16,21 +17,12 @@ public class User
         Id = user.Id.ToString();
         Name = user.Username;
         Email = user.Email;
-        Locale = user.Locale;
+        PartitionKey = user.Locale;
     }
 
-    public User(UserEntity entity)
-    {
-        Id = entity.RowKey;
-        Locale = entity.PartitionKey;
-        Email = entity.Email;
-        Name = entity.Name;
-        Roles = JsonSerializer.Deserialize<IEnumerable<string>>(entity.Roles) ?? Enumerable.Empty<string>();
-    }
-
-    public string Id { get; set; } = null!;
     public string Name { get; set; } = null!;
     public string Locale { get; set; } = null!;
     public string Email { get; set; } = null!;
+    [TableJson]
     public IEnumerable<string> Roles { get; set; } = Enumerable.Empty<string>();
 }
