@@ -30,7 +30,7 @@ jobs:
           --tenant "$ARM_TENANT_ID" || (echo -e "\n\nFailed to log in to Azure."; exit 1)
           az acr login --name ronhaland
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: What if
         working-directory: foozInfra
         run: |

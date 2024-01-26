@@ -12,7 +12,7 @@ const RankedPage = () => {
 
 export default RankedPage;
 
-export const loader = ({ context }: LoaderFunctionArgs) => {
+export const loader = ({ }: LoaderFunctionArgs) => {
   if (!getFeatures()["Ranked"]) throw redirect("/");
   return {};
 };
