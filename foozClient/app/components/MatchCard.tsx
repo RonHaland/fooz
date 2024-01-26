@@ -28,7 +28,7 @@ export const MatchCard = ({ match, roundNumber = 0 }: Props) => {
       </a>
       <div className="flex flex-row justify-between py-2">
         <div
-          className={`flex flex-col p-1 overflow-hidden rounded w-[40%] whitespace-nowrap ${getCompletedColor(
+          className={`flex flex-col p-1 overflow-hidden rounded w-[40%] whitespace-nowrap text-left ${getCompletedColor(
             winningTeam,
             1,
             match.team1Score

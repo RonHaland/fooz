@@ -33,8 +33,11 @@ jobs:
     needs: compare-hash
     if: ${{ needs.compare-hash.outputs.isEqual }} == 'false'
     steps:
+      - name: print isEqual output
+        run: echo ${{needs.compare-hash.outputs.isEqual}}
+
       - uses: actions/checkout@v3
-      - name: build  base docker image
+      - name: build base docker image
         working-directory: ./foozClient
         run: docker build . --file Dockerfile.base --tag ronhaland.azurecr.io/${{ env.BASE_IMAGE_NAME }}:${{ github.ref_name }}
 

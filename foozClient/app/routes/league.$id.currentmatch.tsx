@@ -21,14 +21,15 @@ const MatchesPage = () => {
         {progress?.completedMatches && (
           <LinkButton
             href={`/league/${id}/matches/${
-              progress?.completedMatches?.[progress.completedMatches.length]?.id
+              progress?.completedMatches?.[progress.completedMatches.length - 1]
+                ?.id
             }`}
             colorCode="Alert"
           >
             Previous Match
           </LinkButton>
         )}
-        {progress?.upcomingMatches && (
+        {!!progress?.upcomingMatches?.length && (
           <LinkButton
             href={`/league/${id}/matches/${progress?.upcomingMatches?.[0]?.id}`}
             colorCode="Success"

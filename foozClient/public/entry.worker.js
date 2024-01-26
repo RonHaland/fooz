@@ -2052,6 +2052,13 @@ var require_logout = __commonJS({
   }
 });
 
+// routes-module:routes/ranked.tsx?worker
+var require_ranked = __commonJS({
+  "routes-module:routes/ranked.tsx?worker"(exports, module) {
+    module.exports = {};
+  }
+});
+
 // routes-module:routes/_index.tsx?worker
 var require_index = __commonJS({
   "routes-module:routes/_index.tsx?worker"(exports, module) {
@@ -6602,12 +6609,13 @@ var route16 = __toESM(require_league_id());
 var route17 = __toESM(require_dashboard());
 var route18 = __toESM(require_league());
 var route19 = __toESM(require_logout());
-var route20 = __toESM(require_index());
-var route21 = __toESM(require_login());
-var route22 = __toESM(require_dev());
+var route20 = __toESM(require_ranked());
+var route21 = __toESM(require_index());
+var route22 = __toESM(require_login());
+var route23 = __toESM(require_dev());
 
 // assets-module:@remix-pwa/dev?assets
-var assets = ["/build/__remix_entry_dev-57JSP3NX.js", "/build/root-RJXO626W.js", "/build/manifest-C11DC8DC.js", "/build/entry.client-K3BXFEKO.js", "/build/_assets\\tailwind-26UUTS5X.css", "/build/routes\\_index-2FJKQK6Q.js", "/build/routes\\manifest[.]webmanifest-J3KYYY3Q.js", "/build/routes\\logout-GGSXPJWV.js", "/build/routes\\login-CGHFOSB6.js", "/build/routes\\league_-NN7VJK4L.js", "/build/routes\\league.$id._-ODESP32N.js", "/build/routes\\league.$id.matches_-ODVM5KXB.js", "/build/routes\\league.$id.matches.$matchId-VAJVFTT6.js", "/build/routes\\league.$id.live-6I3XSFIP.js", "/build/routes\\league.$id.currentmatch-CI3GP6GM.js", "/build/routes\\dev-5FPFH2UU.js", "/build/routes\\dashboard._index-57T6YPYK.js", "/build/routes\\dashboard.create-4FW4QARB.js", "/build/routes\\dashboard.$id._index-45JBNMKO.js", "/build/routes\\dashboard.$id.matches-YZ33N6QX.js", "/build/routes\\dashboard.$id.currentMatch-ROTW5ASG.js", "/build/routes\\dashboard.$id-RLDHHY6N.js", "/build/routes\\dashboard-4YLNNPRR.js", "/build/routes\\auth.discord.callback-JXEB4YOX.js", "/build/routes\\auth.discord-CRIW2GRS.js", "/build/routes\\api.timer.$id-N7YNZ2TC.js", "/build/routes\\api.matchcounts.$playerCount-5PKYLHOY.js", "/build/_shared\\runtime-GC7QIU56.js", "/build/_shared\\remix_hmr-E4BAQ472.js", "/build/_shared\\react-dom-BEFB7ICU.js", "/build/_shared\\react-3OYUNTOK.js", "/build/_shared\\jsx-runtime-7NXSP56X.js", "/build/_shared\\jsx-dev-runtime-RDH4Y5YT.js", "/build/_shared\\esm-OCNRLVPW.js", "/build/_shared\\client-DFZR44C7.js", "/build/_shared\\chunk-ZWGWGGVF.js", "/build/_shared\\chunk-YE6Q5HHP.js", "/build/_shared\\chunk-XU7DNSPJ.js", "/build/_shared\\chunk-XDS37GW4.js", "/build/_shared\\chunk-W77RCSJG.js", "/build/_shared\\chunk-VJAR6R4I.js", "/build/_shared\\chunk-UWV35TSL.js", "/build/_shared\\chunk-QVTEV3NZ.js", "/build/_shared\\chunk-PUKLAE6H.js", "/build/_shared\\chunk-PNG5AS42.js", "/build/_shared\\chunk-NJNNCB5O.js", "/build/_shared\\chunk-LTP3CCSP.js", "/build/_shared\\chunk-JTFXJANC.js", "/build/_shared\\chunk-JSCKBFOW.js", "/build/_shared\\chunk-HRZRJA3Y.js", "/build/_shared\\chunk-HJNVZITX.js", "/build/_shared\\chunk-HFTKHOW3.js", "/build/_shared\\chunk-GIAAE3CH.js", "/build/_shared\\chunk-G7CHZRZX.js", "/build/_shared\\chunk-EYZ4MBU5.js", "/build/_shared\\chunk-DE64GZUO.js", "/build/_shared\\chunk-DCK44HWP.js", "/build/_shared\\chunk-BOXFZXVX.js", "/build/_shared\\chunk-B73F5V2H.js", "/build/_shared\\chunk-25RGHBQ7.js"];
+var assets = ["/build/__remix_entry_dev-M2SUBXZ7.js", "/build/root-AWCZZVOM.js", "/build/manifest-5836708F.js", "/build/entry.client-PTDVEVYP.js", "/build/_shared\\runtime-GC7QIU56.js", "/build/_shared\\remix_hmr-E4BAQ472.js", "/build/_shared\\react-dom-BEFB7ICU.js", "/build/_shared\\react-3OYUNTOK.js", "/build/_shared\\jsx-runtime-7NXSP56X.js", "/build/_shared\\jsx-dev-runtime-RDH4Y5YT.js", "/build/_shared\\esm-OCNRLVPW.js", "/build/_shared\\client-DFZR44C7.js", "/build/_shared\\chunk-ZWGWGGVF.js", "/build/_shared\\chunk-XU7DNSPJ.js", "/build/_shared\\chunk-VJAR6R4I.js", "/build/_shared\\chunk-UWV35TSL.js", "/build/_shared\\chunk-UUTUI6TJ.js", "/build/_shared\\chunk-SMLDOVWW.js", "/build/_shared\\chunk-PUKLAE6H.js", "/build/_shared\\chunk-PNG5AS42.js", "/build/_shared\\chunk-JSCKBFOW.js", "/build/_shared\\chunk-HRZRJA3Y.js", "/build/_shared\\chunk-GIAAE3CH.js", "/build/_shared\\chunk-G7CHZRZX.js", "/build/_shared\\chunk-G4ECE36W.js", "/build/_shared\\chunk-EYZ4MBU5.js", "/build/_shared\\chunk-DKNLJCIL.js", "/build/_shared\\chunk-DE64GZUO.js", "/build/_shared\\chunk-CGE4IZVO.js", "/build/_shared\\chunk-BOXFZXVX.js", "/build/_shared\\chunk-AJTI6SLT.js", "/build/_shared\\chunk-7D36Q3HR.js", "/build/_shared\\chunk-7C2LEJXK.js", "/build/_shared\\chunk-6MJAZIHF.js", "/build/_shared\\chunk-5SSZDU5W.js", "/build/_shared\\chunk-3GRH4EY2.js", "/build/_shared\\chunk-2M5OLK4F.js", "/build/_shared\\chunk-25RGHBQ7.js", "/build/_assets\\tailwind-4LO45B3I.css", "/build/routes\\_index-CAR32BL4.js", "/build/routes\\ranked-YL7E2E4G.js", "/build/routes\\manifest[.]webmanifest-J3KYYY3Q.js", "/build/routes\\logout-GGSXPJWV.js", "/build/routes\\login-5AZSDSCF.js", "/build/routes\\league_-SFTPXUMI.js", "/build/routes\\league.$id._-TFIERMJL.js", "/build/routes\\league.$id.matches_-WQ5CIP24.js", "/build/routes\\league.$id.matches.$matchId-DQPGSAM3.js", "/build/routes\\league.$id.live-QVPE45G5.js", "/build/routes\\league.$id.currentmatch-KYMO2TUE.js", "/build/routes\\dev-MJDI3NT4.js", "/build/routes\\dashboard._index-JXM3Y7ZA.js", "/build/routes\\dashboard.create-HWQVRYAV.js", "/build/routes\\dashboard.$id._index-S6WX4AQM.js", "/build/routes\\dashboard.$id.matches-OCTZFZ4H.js", "/build/routes\\dashboard.$id.currentMatch-CYBF4Z2Y.js", "/build/routes\\dashboard.$id-XHMJLHGC.js", "/build/routes\\dashboard-MFQJH2MT.js", "/build/routes\\auth.discord.callback-JXEB4YOX.js", "/build/routes\\auth.discord-CRIW2GRS.js", "/build/routes\\api.timer.$id-N7YNZ2TC.js", "/build/routes\\api.matchcounts.$playerCount-5PKYLHOY.js"];
 
 // entry-module:@remix-pwa/build/magic
 var routes = {
@@ -6771,13 +6779,21 @@ var routes = {
     caseSensitive: void 0,
     module: route19
   },
+  "routes/ranked": {
+    id: "routes/ranked",
+    parentId: "root",
+    path: "ranked",
+    index: void 0,
+    caseSensitive: void 0,
+    module: route20
+  },
   "routes/_index": {
     id: "routes/_index",
     parentId: "root",
     path: void 0,
     index: true,
     caseSensitive: void 0,
-    module: route20
+    module: route21
   },
   "routes/login": {
     id: "routes/login",
@@ -6785,7 +6801,7 @@ var routes = {
     path: "login",
     index: void 0,
     caseSensitive: void 0,
-    module: route21
+    module: route22
   },
   "routes/dev": {
     id: "routes/dev",
@@ -6793,7 +6809,7 @@ var routes = {
     path: "dev",
     index: void 0,
     caseSensitive: void 0,
-    module: route22
+    module: route23
   }
 };
 var entry = { module: entry_worker_exports };

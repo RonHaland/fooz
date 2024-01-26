@@ -1,6 +1,10 @@
 import { LiveReload, useSWEffect } from "@remix-pwa/sw";
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from "@remix-run/node";
 import {
   Links,
   Meta,
@@ -9,6 +13,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import tailwindCssUrl from "~/styles/tailwind.css";
+import { getFeatures } from "./utils/features";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -39,3 +44,9 @@ export default function App() {
     </html>
   );
 }
+
+export const loader = ({}: LoaderFunctionArgs) => {
+  return {
+    Features: getFeatures(),
+  };
+};

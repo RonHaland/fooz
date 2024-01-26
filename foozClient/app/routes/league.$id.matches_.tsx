@@ -23,7 +23,7 @@ const MatchesPage = () => {
     <div className="container mx-auto">
       <ImageHeader text="Match overview" src="/images/foosHeader.jpg" alt="" />
       <TournamentNavBar>
-        <LinkButton href={`/tournament/${id}/currentmatch`} colorCode="Success">
+        <LinkButton href={`/league/${id}/currentmatch`} colorCode="Success">
           Current Match
         </LinkButton>
       </TournamentNavBar>

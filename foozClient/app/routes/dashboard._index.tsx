@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Form,
   useActionData,
@@ -12,8 +12,7 @@ import { LeagueList } from "~/components/LeagueList";
 import { createRef, useEffect, useState } from "react";
 import type { DashboardContext } from "./dashboard";
 import { LinkButton } from "~/components";
-import { DeleteLeagueStatus } from "~/_types/deleteLeague";
-import { AltModal } from "~/components/Modal/AltModal";
+import type { DeleteLeagueStatus } from "~/_types/deleteLeague";
 import { ConfirmationModal } from "~/components/Modal";
 import { GetTokenFromRequest } from "~/utils/token.server";
 
@@ -46,6 +45,7 @@ const DashboardPage = () => {
       confirmDeleteRef.current?.close();
     }
     if (actionData?.deleteStatus.refresh) navigate(".");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionData]);
   return (
     <div className="flex flex-col container mx-auto items-center pt-8">
