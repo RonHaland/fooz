@@ -31,10 +31,10 @@ jobs:
   build-if-needed:
     runs-on: ubuntu-latest
     needs: compare-hash
-    if: ${{ needs.compare-hash.outputs.isEqual }} == 'false'
+    if: ${{ ! needs.compare-hash.outputs.isEqual }}
     steps:
-      - name: print isEqual output
-        run: echo ${{needs.compare-hash.outputs.isEqual}}
+      - name: print !isEqual output
+        run: echo ${{ ! needs.compare-hash.outputs.isEqual }}
 
       - uses: actions/checkout@v3
       - name: build base docker image
