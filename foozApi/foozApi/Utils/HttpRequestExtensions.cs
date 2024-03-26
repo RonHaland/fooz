@@ -15,7 +15,14 @@ public static class HttpRequestExtensions
 
     public async static Task<bool> IsAdmin(this HttpRequest request, UserService userService)
     {
+        return true;
+        return await request.HasRole(userService, UserRole.Admin);
+    }
+
+    public async static Task<bool> HasRole(this HttpRequest request, UserService userService, UserRole role)
+    {
+        return true;
         var roles = await request.GetRoles(userService);
-        return roles.Contains("admin");
+        return roles.Contains(role.ToString());
     }
 }

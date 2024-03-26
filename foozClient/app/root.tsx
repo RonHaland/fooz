@@ -14,6 +14,8 @@ import {
 } from "@remix-run/react";
 import tailwindCssUrl from "~/styles/tailwind.css";
 import { getFeatures } from "./utils/features";
+import { DndProvider } from "react-dnd";
+import { TouchBackend } from "react-dnd-touch-backend";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -26,6 +28,7 @@ export const meta: MetaFunction = () => {
 
 export default function App() {
   useSWEffect();
+
   return (
     <html lang="en" className="dark">
       <head>
@@ -35,8 +38,13 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-gradient-to-bl from-sky-100 to-indigo-300 dark:from-slate-700 dark:to-slate-950 text-slate-700 dark:text-slate-400 min-h-[100dvh]">
-        <Outlet />
+      <body className="bg-gradient-to-bl from-sky-100 to-indigo-300 dark:from-slate-700 dark:to-slate-950 text-slate-700 dark:text-slate-400 min-h-[100lvh]">
+        <DndProvider
+          backend={TouchBackend}
+          options={{ enableMouseEvents: true }}
+        >
+          <Outlet />
+        </DndProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

@@ -26,10 +26,11 @@ export const LeagueList = ({
       className="border-b border-slate-100/20 first-of-type:border-t"
     >
       <td className="p-1 sm:py-3">
-        <div className="flex flex-col text-slate-300">
+        <div className="flex flex-col text-slate-300 w-40 sm:w-60 ">
           <Link
             to={`./${t.id}`}
             className="font-semibold text-ellipsis whitespace-nowrap overflow-hidden h-6"
+            title={t.name}
           >
             {t.name}
           </Link>
@@ -66,13 +67,13 @@ export const LeagueList = ({
     <div className="flex flex-col items-center gap-2">
       <h2 className="text-2xl text-slate-200 text-center mb-4">Tournaments</h2>
       <div className="max-sm:min-h-[512px] sm:h-[512px] overflow-y-auto">
-        <table className="table-fixed ">
+        <table className="table-fixed max-w-[100dvw]">
           <thead>
             <tr>
-              <th className="w-60 sm:w-60"></th>
+              <th className="w-40 sm:w-60"></th>
               <th className="hidden sm:block sm:w-24"></th>
               <th className="w-16"></th>
-              <th className="w-16"></th>
+              {manage && <th className="w-16"></th>}
             </tr>
           </thead>
           <tbody>{leaguesButtons}</tbody>

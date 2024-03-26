@@ -4,7 +4,7 @@ export const useButtonStyles = (colorCode?:
   | "Info"
   | "Success"
   | "Alert"
-  | "Warning", disabled?: boolean) => {
+  | "Warning", disabled?: boolean, padding?: string) => {
     let classColors =
     "dark:bg-zinc-700/50 dark:text-zinc-500 bg-slate-400 text-slate-800";
   
@@ -36,6 +36,6 @@ export const useButtonStyles = (colorCode?:
         break;
     }
   }
-  let className = `rounded p-2 ${classColors}`;
+  let className = `rounded ${!padding ? "p-2" : padding} ${classColors}`;
   return className;
 }

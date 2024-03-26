@@ -51,4 +51,5 @@ public class UserService
 public enum UserRole
 {
     Admin,
+    Ranked
 }

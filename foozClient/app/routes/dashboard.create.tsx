@@ -85,7 +85,7 @@ const CreateLeague = () => {
     };
 
     const inputs = (
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 w-full">
         <label>Players: </label>
         {formState.players.concat([""]).map((p, i) => {
           return (
@@ -117,28 +117,34 @@ const CreateLeague = () => {
     <>
       <div className="flex flex-row justify-center mt-8">
         <div className="flex flex-col items-center gap-2">
-          <h1 className="text-4xl text-slate-100">Create League</h1>
+          <h2 className="text-4xl text-slate-100">Create League</h2>
           {errMessage && <h2>Error {errMessage}</h2>}
 
           <Form method="post">
             <div className="flex flex-row justify-center mt-4">
-              <div className="flex flex-col items-start gap-2 min-w-48">
+              <div className="flex flex-col items-start gap-2 min-w-48 text-slate-200 lg:w-80">
                 <label>Name: </label>
                 <input
                   type="text"
                   name="name"
                   value={formState?.name}
+                  className="rounded p-2 pr-10 focus-within:outline focus-within:outline-orange-600 bg-transparent border-slate-200 border-2 w-full"
                   onChange={(v) =>
                     setFormState({ ...formState, name: v.target.value })
                   }
                 ></input>
                 {playerInputs}
+                <label>Total number of matches: </label>
                 <select
                   name="matchCount"
                   onChange={onSelectedMatchCountChange}
-                  value={formState.matchCount}
+                  value={formState.matchCount ?? 0}
+                  className="rounded p-2 focus-within:outline focus-within:outline-orange-600 w-full bg-transparent border-slate-200 border-2 focus:bg-slate-800"
                 >
-                  {matchCountOptions}
+                  {!!matchCountOptions.length && matchCountOptions}
+                  {!matchCountOptions.length && (
+                    <option disabled>Need at least 4 players...</option>
+                  )}
                 </select>
                 <ActionButton colorCode="Success" onClick={onOpenModal}>
                   Create

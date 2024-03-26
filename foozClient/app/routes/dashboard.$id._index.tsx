@@ -12,7 +12,7 @@ const TournamentDashboardPage = () => {
     .sort((a, b) => b.score - a.score)
     .map((p, i) => <ScoreRow key={p.id} player={p} ind={i + 1} />);
   return (
-    <div className="flex flex-col gap-8 pt-4 justify-center items-center container mx-auto">
+    <div className="flex flex-col gap-8 pt-4 justify-center items-center mx-auto mb-4 max-w-[100dvw] md:container">
       <h2 className="text-center text-2xl text-slate-200">{league?.name}</h2>
       <div className="grid grid-cols-2 gap-2 text-center">
         <LinkButton href={"./currentmatch"} colorCode="Success">

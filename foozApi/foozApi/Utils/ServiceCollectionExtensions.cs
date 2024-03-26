@@ -13,8 +13,10 @@ public static class ServiceCollectionExtensions
                 .ConfigureConnectionString(connstr)
                 .RegisterTable<User>()
                 .RegisterTable<League>()
-                .RegisterTable<Models.Match>()
-                .RegisterTable<Player>();
+                .RegisterTable<Match>()
+                .RegisterTable<Player>()
+                .RegisterTable<RankedMatch>()
+                .RegisterTable<RankedPlayer>();
 
         return services.AddSingleton(tableContext);
     }

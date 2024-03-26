@@ -37,7 +37,6 @@ const DashboardPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(actionData?.deleteStatus);
     setDeleteStatus(actionData?.deleteStatus);
     if (actionData?.deleteStatus.showPopup)
       confirmDeleteRef.current?.showModal();
@@ -51,8 +50,8 @@ const DashboardPage = () => {
     <div className="flex flex-col container mx-auto items-center pt-8">
       <LeagueList leagues={leagues as any} manage />
       <Form method="DELETE">
-        <input type="hidden" name="id" value={deleteStatus?.id} />
-        <input type="hidden" name="name" value={deleteStatus?.name} />
+        <input type="hidden" name="id" value={deleteStatus?.id ?? ""} />
+        <input type="hidden" name="name" value={deleteStatus?.name ?? ""} />
         <ConfirmationModal submit ref={confirmDeleteRef}></ConfirmationModal>
       </Form>
     </div>
@@ -78,7 +77,6 @@ export const loader = async ({}: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method == "POST") {
     const fd = await request.formData();
-    console.log(fd.get("id"));
     const deleteStatus = {
       showPopup: true,
       id: fd.get("id"),
@@ -96,7 +94,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       },
       method: "DELETE",
     });
-    console.log(result);
     return {
       deleteStatus: { showPopup: false, refresh: true } as DeleteLeagueStatus,
     };
