@@ -48,6 +48,18 @@ public static class MatchEndpoints
         .Produces(StatusCodes.Status200OK)
         .WithCommonOpenApi();
 
+        app.MapPut("/League/{leagueId}/Matches/reorder", async ([FromBody] List<UpdateMatchOrderDto> newOrderList, [FromRoute] string leagueId, HttpRequest request) =>
+        {
+            if (!await request.IsAdmin(userService)) throw new UnauthorizedAccessException();
+            await leagueService.UpdateMatchOrder(leagueId, newOrderList);
+            await liveService.SendUpdate(leagueId);
+
+            return Results.Ok();
+        })
+        .WithName("Update match order")
+        .Produces(StatusCodes.Status200OK)
+        .WithCommonOpenApi();
+
         app.MapGet("/League/{leagueId}/Matches/{matchId}", async ([FromRoute] string leagueId, string matchId) =>
         {
             var currentMatch = await leagueService.GetMatch(leagueId, matchId);

@@ -142,6 +142,18 @@ public sealed class LeagueService
         await _tableContext.Save(match);
     }
 
+    public async Task UpdateMatchOrder(string tournamentId, List<UpdateMatchOrderDto> newOrderList)
+    {
+        var newOrderDictionary = newOrderList.ToDictionary(n => n.Id, n => n.Order);
+        var matches = await GetMatches(tournamentId);
+        foreach (var match in matches) 
+        {
+            match.Order = newOrderDictionary.TryGetValue(match.Id, out var order) ? order : match.Order;
+        }
+
+        await _tableContext.Save(matches.ToArray());
+    }
+
     public List<int> PossibleMatchCounts(int playerCount, int maxGames = 100) => GetOptions(playerCount, maxGames);
 
     private List<int> GetOptions(int count, int max = 100) => Enumerable.Range(1, max).Where(n => count * n % 4 == 0 && count * n / 4 <= max).Select(n => (n * count) / 4 ).ToList();

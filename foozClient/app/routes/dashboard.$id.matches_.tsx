@@ -18,7 +18,7 @@ const MatchesDashboardPage = () => {
   useEffect(() => {
     const match = matches?.find((m) => m.id == editMatch?.id);
     setEditMatch(match);
-  }, [matches]);
+  }, [matches, setEditMatch]);
 
   const scores = matches?.map((p, i) => {
     const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
