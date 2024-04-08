@@ -1,6 +1,6 @@
 import { Form } from "@remix-run/react";
+import { FaDiscord, FaHome, FaKey } from "react-icons/fa";
 import { ActionButton, LinkButton } from "~/components";
-import { FaDiscord, FaHouse, FaKey } from "react-icons/fa6/index";
 
 const LoginPage = () => {
   return (
@@ -33,7 +33,7 @@ const LoginPage = () => {
             <span className="inline-flex items-center gap-2">
               Home{" "}
               <span className="text-xl">
-                <FaHouse />
+                <FaHome />
               </span>
             </span>
           </LinkButton>

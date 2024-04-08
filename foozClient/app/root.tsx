@@ -1,5 +1,3 @@
-import { LiveReload, useSWEffect } from "@remix-pwa/sw";
-import { cssBundleHref } from "@remix-run/css-bundle";
 import type {
   LinksFunction,
   LoaderFunctionArgs,
@@ -7,28 +5,24 @@ import type {
 } from "@remix-run/node";
 import {
   Links,
+  LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import tailwindCssUrl from "~/styles/tailwind.css";
+import "./tailwind.css";
 import { getFeatures } from "./utils/features";
 import { DndProvider } from "react-dnd";
-import { TouchBackend } from "react-dnd-touch-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-  { rel: "stylesheet", href: tailwindCssUrl },
-];
+export const links: LinksFunction = () => [];
 
 export const meta: MetaFunction = () => {
   return [{ title: "Fooz App" }, { name: "description", content: "Fooz app" }];
 };
 
 export default function App() {
-  useSWEffect();
-
   return (
     <html lang="en" className="dark">
       <head>
@@ -40,7 +34,7 @@ export default function App() {
       </head>
       <body className="bg-gradient-to-bl from-sky-100 to-indigo-300 dark:from-slate-700 dark:to-slate-950 text-slate-700 dark:text-slate-400 min-h-[100lvh]">
         <DndProvider
-          backend={TouchBackend}
+          backend={HTML5Backend}
           options={{ enableMouseEvents: true }}
         >
           <Outlet />
@@ -53,6 +47,7 @@ export default function App() {
   );
 }
 
+// eslint-disable-next-line no-empty-pattern
 export const loader = ({}: LoaderFunctionArgs) => {
   return {
     Features: getFeatures(),
