@@ -16,13 +16,11 @@ public class User : TableModel
     {
         Id = user.Id.ToString();
         Name = user.Username;
-        Email = user.Email;
         PartitionKey = user.Locale;
     }
 
     public string Name { get; set; } = null!;
     public string Locale { get; set; } = null!;
-    public string Email { get; set; } = null!;
     [TableJson]
     public IEnumerable<string> Roles { get; set; } = Enumerable.Empty<string>();
 }
