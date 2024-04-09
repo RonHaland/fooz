@@ -21,7 +21,7 @@ const discordStrategy = new DiscordStrategy(
     clientSecret: process.env.DISCORD_AUTH_CLIENT_SECRET ?? "",
     callbackURL: process.env.DISCORD_AUTH_CALLBACK_URL ?? "",
     // Provide all the scopes you want as an array
-    scope: [ "email", "identify" ],
+    scope: [ "identify" ],
   },
   async ({
     accessToken,
