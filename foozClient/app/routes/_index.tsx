@@ -8,7 +8,7 @@ export default function Index() {
     <div className="container mx-auto">
       <ImagePreview />
       <div className="flex flex-col items-center">
-        <h1 className="text-4xl">Nu ska det foozast</h1>
+        <h1 className="text-4xl">Foosball</h1>
         <div className="flex flex-row gap-4 p-1 my-2">
           {/* <LinkButton href="/timer" colorCode="Secondary">
           Timer

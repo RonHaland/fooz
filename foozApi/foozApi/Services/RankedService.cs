@@ -1,16 +1,16 @@
-﻿using AzureTableContext;
-using foozApi.Exceptions;
+﻿using foozApi.Exceptions;
 using foozApi.Models;
+using TableWorm;
 
 namespace foozApi.Services;
 
 public class RankedService
 {
-    private readonly TableContext _tableContext;
+    private readonly TableStorage _tableStorage;
 
-    public RankedService(TableContext tableContext)
+    public RankedService(TableStorage tableStorage)
     {
-        _tableContext = tableContext;
+        _tableStorage = tableStorage;
     }
 
 
@@ -19,7 +19,7 @@ public class RankedService
         if (playerIds.Count() != 4) { throw new ArgumentException("Ranked game must have exactly 4 players", nameof(playerIds)); }
 
         var playerQuery = string.Join(" or ", playerIds.Select(pid => $"RowKey eq '{pid}'"));
-        var players = await _tableContext.QueryAsync<RankedPlayer>(playerQuery);
+        var players = await _tableStorage.QueryAsync<RankedPlayer>(playerQuery);
 
         if (players == null || players.Count() != 4)
         {
@@ -39,7 +39,7 @@ public class RankedService
         
         List<string> allPlayersIds = [.. team1players, .. team2players];
         var playerQuery = string.Join(" or ", allPlayersIds.Select(pid => $"RowKey eq '{pid}'"));
-        var players = await _tableContext.QueryAsync<RankedPlayer>(playerQuery);
+        var players = await _tableStorage.QueryAsync<RankedPlayer>(playerQuery);
 
         if (players == null || players.Count() != 4)
         {
@@ -66,14 +66,14 @@ public class RankedService
             Team2Player2 = team2[1],
         };
 
-        await _tableContext.Save(match);
+        await _tableStorage.Save(match);
 
         return match;
     }
 
     public async Task CompleteMatch(string matchId, int winningTeam)
     {
-        var match = _tableContext.Get<RankedMatch>(matchId);
+        var match = _tableStorage.Get<RankedMatch>(matchId);
         if (match == null)
             throw new NotFoundException("Match not found");
 
@@ -89,7 +89,7 @@ public class RankedService
         match.Team1Score = winningTeam == 1 ? 1 : 0;
         match.Team2Score = winningTeam == 2 ? 1 : 0;
 
-        await _tableContext.Save(match);
+        await _tableStorage.Save(match);
     }
 
     private void AdjustRatings(List<RankedPlayer> team, double ratingDiff, bool won = true)
@@ -115,7 +115,7 @@ public class RankedService
         if (fromDate != null) query += $"Timestamp > '{fromDate:O}'";
         if (toDate != null) query += $"Timestamp < '{toDate:O}'";
 
-        var matches = await _tableContext.QueryAsync<RankedMatch>(query);
+        var matches = await _tableStorage.QueryAsync<RankedMatch>(query);
         if (matches?.Count() > 100)
         {
             matches = matches.OrderBy(x => x.ModifiedDate).Take(100);
@@ -126,7 +126,7 @@ public class RankedService
 
     public RankedMatch? GetRankedMatch(string matchId)
     {
-        var match = _tableContext.Get<RankedMatch>(matchId);
+        var match = _tableStorage.Get<RankedMatch>(matchId);
         
         return match;
     }
@@ -140,14 +140,14 @@ public class RankedService
             Rating = 1000,
         };
 
-        await _tableContext.Save(player);
+        await _tableStorage.Save(player);
 
         return player;
     }
 
     public async Task<List<RankedPlayer>> GetRankedPlayers()
     {
-        var players = await _tableContext.QueryAsync<RankedPlayer>("");
+        var players = await _tableStorage.QueryAsync<RankedPlayer>("");
         return players?.ToList() ?? [];
     }
 

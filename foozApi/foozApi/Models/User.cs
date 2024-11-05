@@ -1,6 +1,6 @@
-﻿using AzureTableContext;
-using AzureTableContext.Attributes;
-using Discord.Rest;
+﻿using Discord.Rest;
+using TableWorm;
+using TableWorm.Attributes;
 
 namespace foozApi.Models;
 

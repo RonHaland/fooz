@@ -1,23 +1,16 @@
-﻿using AzureTableContext;
-using foozApi.Models;
+﻿using foozApi.Services;
 
 namespace foozApi.Utils;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddTableContext(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection RegisterServices(this IServiceCollection services)
     {
-        var tableContext = new TableContext();
-        var connstr = config.GetValue<string>("TableConnectionString")!;
-        tableContext
-                .ConfigureConnectionString(connstr)
-                .RegisterTable<User>()
-                .RegisterTable<League>()
-                .RegisterTable<Match>()
-                .RegisterTable<Player>()
-                .RegisterTable<RankedMatch>()
-                .RegisterTable<RankedPlayer>();
+        services.AddSingleton<LeagueService>();
+        services.AddSingleton<LiveUpdateService>();
+        services.AddSingleton<UserService>();
+        services.AddSingleton<RankedService>();
 
-        return services.AddSingleton(tableContext);
+        return services;
     }
 }
