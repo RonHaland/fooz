@@ -1,4 +1,4 @@
-﻿using AzureTableContext.Attributes;
+﻿using TableWorm.Attributes;
 
 namespace foozApi.Models;
 

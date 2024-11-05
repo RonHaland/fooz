@@ -1,13 +1,11 @@
 using foozApi.Endpoints;
 using foozApi.Exceptions;
-using foozApi.Services;
+using foozApi.Models;
 using foozApi.Utils;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+using TableWorm;
 using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,12 +28,15 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddCors();
 
-builder.Services.AddSingleton<LeagueService>();
-builder.Services.AddSingleton<LiveUpdateService>();
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<RankedService>();
+builder.Services.RegisterServices();
 
-builder.Services.AddTableContext(builder.Configuration);
+builder.Services.AddTableStorage(c => c.ConfigureConnectionString(builder.Configuration.GetValue<string>("TableConnectionString")!)
+    .AddTable<League>()
+    .AddTable<Match>()
+    .AddTable<Player>()
+    .AddTable<RankedMatch>()
+    .AddTable<RankedPlayer>()
+    .AddTable<User>());
 
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(opt =>
 {

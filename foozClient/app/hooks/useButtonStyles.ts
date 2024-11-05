@@ -1,23 +1,27 @@
-export const useButtonStyles = (colorCode?:
-  | "Primary"
-  | "Secondary"
-  | "Info"
-  | "Success"
-  | "Alert"
-  | "Warning", disabled?: boolean, padding?: string) => {
-    let classColors =
+export const useButtonStyles = (
+  colorCode?:
+    | "Primary"
+    | "Secondary"
+    | "Info"
+    | "Success"
+    | "Alert"
+    | "Warning",
+  disabled?: boolean,
+  padding?: string
+) => {
+  let classColors =
     "dark:bg-zinc-700/50 dark:text-zinc-500 bg-slate-400 text-slate-800";
-  
+
   if (colorCode && !disabled) {
     switch (colorCode) {
       case "Primary":
         classColors =
-        "dark:border-sky-900 dark:bg-sky-700 dark:text-slate-200 dark:hover:bg-sky-800 bg-sky-400 text-slate-800 hover:bg-sky-300";
+          "dark:border-sky-900 dark:bg-sky-700 dark:text-slate-200 dark:hover:bg-sky-800 bg-sky-400 text-slate-800 hover:bg-sky-300";
         break;
-        case "Secondary":
-          classColors =
-            "dark:border-indigo-900 dark:bg-indigo-700 dark:text-slate-200 dark:hover:bg-indigo-950 bg-indigo-400 text-slate-800 hover:bg-indigo-300";
-          break;
+      case "Secondary":
+        classColors =
+          "dark:border-indigo-900 dark:bg-indigo-700 dark:text-slate-200 dark:hover:bg-indigo-900 bg-indigo-400 text-slate-800 hover:bg-indigo-300";
+        break;
       case "Success":
         classColors =
           "dark:bg-lime-700 dark:text-slate-200 dark:hover:bg-lime-800 bg-lime-400 text-slate-800 hover:bg-lime-300";
@@ -36,6 +40,6 @@ export const useButtonStyles = (colorCode?:
         break;
     }
   }
-  let className = `rounded ${!padding ? "p-2" : padding} ${classColors}`;
+  const className = `rounded ${!padding ? "p-2" : padding} ${classColors}`;
   return className;
-}
+};

@@ -1,16 +1,17 @@
-﻿using AzureTableContext;
-using foozApi.DTO;
+﻿using foozApi.DTO;
 using foozApi.Models;
+using foozApi.Utils;
+using TableWorm;
 
 namespace foozApi.Services;
 
 public sealed class LeagueService
 {
-    private readonly TableContext _tableContext;
+    private readonly TableStorage _tableStorage;
 
-    public LeagueService(TableContext tableContext)
+    public LeagueService(TableStorage tableStorage)
     {
-        _tableContext = tableContext;
+        _tableStorage = tableStorage;
     }
 
     public async Task<League> CreateLeague(string leagueName, List<string> names, int matchCount)
@@ -25,29 +26,45 @@ public sealed class LeagueService
             throw new ArgumentException($"matchCount parameter must be one of [{options}]");
         }
 
-        var counters = names.OrderBy(n => Random.Shared.Next(100)).ToDictionary(k => new Player { Name = k }, v => 0);
+        var counters = names.OrderBy(n => Random.Shared.Next(100)).ToDictionary(k => new Player { Name = k }, v => new { count = 0, front = 0, back = 0 });
 
         var matches = new List<Match>();
         int count = 0;
 
         while (matches.Count < matchCount)
         {
-            if (counters.Any(c => c.Value > 100)) break;
-            var selected = counters.OrderBy(c => c.Value).ThenBy(n => Random.Shared.Next(100)).Take(4).ToList();
+            if (counters.Any(c => c.Value.count > 100)) break;
+            var frontPlayers = counters
+                .OrderBy(c => c.Value.count)
+                .ThenBy(c => c.Value.front)
+                .ThenBy(n => Random.Shared.Next(100))
+                .Take(2).ToList();
+            var backPlayers = counters
+                .Where(c => !frontPlayers.Any(f => f.Key == c.Key))
+                .OrderBy(c => c.Value.count)
+                .ThenBy(c => c.Value.back)
+                .ThenBy(c => c.Key.MatchCountWith(frontPlayers.First().Key, matches))
+                .ThenBy(c => c.Key.MatchCountWith(frontPlayers.Last().Key, matches))
+                .ThenBy(n => Random.Shared.Next(100))
+                .Take(2).ToList();
+
+            var selected = frontPlayers.Concat(backPlayers).ToList();
 
             var match = new Match
             {
-                Team1Player1 = selected.First().Key,
-                Team1Player2 = selected.Skip(1).First().Key,
-                Team2Player1 = selected.Skip(2).First().Key,
-                Team2Player2 = selected.Skip(3).First().Key,
+                Team1Player1 = frontPlayers.First().Key,
+                Team1Player2 = backPlayers.First().Key,
+                Team2Player1 = frontPlayers.Skip(1).First().Key,
+                Team2Player2 = backPlayers.Skip(1).First().Key,
                 Order = count,
             };
 
             matches.Add(match);
             foreach (var item in selected)
             {
-                counters[item.Key]++;
+                var current = counters[item.Key];
+                var isFront = item.Key == match.Team1Player1 || item.Key == match.Team2Player1;
+                counters[item.Key] = new { count = current.count+1, front = isFront ? current.front + 1 : current.front , back = !isFront ? current.back + 1 : current.back };
             }
             count++;
         }
@@ -63,7 +80,7 @@ public sealed class LeagueService
             Matches = matches,
         };
 
-        await _tableContext.Save(league);
+        await _tableStorage.Save(league);
 
         return league;
     }
@@ -78,14 +95,14 @@ public sealed class LeagueService
 
     public async Task<List<League>> GetLeagues()
     {
-        var leagues = await _tableContext.QueryAsync<League>("", 1);
+        var leagues = await _tableStorage.QueryAsync<League>("", 1);
 
         return leagues?.ToList() ?? [];
     }
 
     public async Task<League?> GetLeague(string id)
     {
-        var leagues = await _tableContext.QueryAsync<League>($"RowKey eq '{id}'");
+        var leagues = await _tableStorage.QueryAsync<League>($"RowKey eq '{id}'");
         var league = leagues?.FirstOrDefault();
         if (league == null) return null;
         league.Matches = league.Matches.OrderBy(m => m.Order).ToList();
@@ -95,17 +112,17 @@ public sealed class LeagueService
 
     public async Task DeleteLeague(string id)
     {
-        var leagues = await _tableContext.QueryAsync<League>($"RowKey eq '{id}'");
+        var leagues = await _tableStorage.QueryAsync<League>($"RowKey eq '{id}'");
         var league = leagues?.FirstOrDefault();
         if (league == null) return;
-        await _tableContext.Delete(league, 3);
+        await _tableStorage.Delete(league, 3);
     }
 
 
     public async Task<Match?> GetMatch(string leagueId, string matchId)
     {
         var matchQuery = $"RowKey eq '{matchId}' and PartitionKey eq '{leagueId}'";
-        var matches = await _tableContext.QueryAsync<Match>(matchQuery);
+        var matches = await _tableStorage.QueryAsync<Match>(matchQuery);
         var match = matches?.FirstOrDefault();
         return match;
     }
@@ -132,14 +149,14 @@ public sealed class LeagueService
     public async Task UpdateMatchScores(string tournamentId, string matchId, int team1Score, int team2Score)
     {
         var MatchQuery = $"PartitionKey ge '{tournamentId}' and PartitionKey lt '{tournamentId}a' and RowKey eq '{matchId}'";
-        var matches = _tableContext.Query<Match>(MatchQuery);
+        var matches = _tableStorage.Query<Match>(MatchQuery);
         var match = matches?.FirstOrDefault();
         if (match == null) return;
 
         match.Team1Score = team1Score;
         match.Team2Score = team2Score;
         match.IsCompleted = true;
-        await _tableContext.Save(match);
+        await _tableStorage.Save(match);
     }
 
     public async Task UpdateMatchOrder(string tournamentId, List<UpdateMatchOrderDto> newOrderList)
@@ -151,7 +168,7 @@ public sealed class LeagueService
             match.Order = newOrderDictionary.TryGetValue(match.Id, out var order) ? order : match.Order;
         }
 
-        await _tableContext.Save(matches.ToArray());
+        await _tableStorage.Save(matches.ToArray());
     }
 
     public List<int> PossibleMatchCounts(int playerCount, int maxGames = 100) => GetOptions(playerCount, maxGames);

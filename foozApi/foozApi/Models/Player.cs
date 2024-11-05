@@ -1,5 +1,5 @@
-﻿using AzureTableContext;
-using AzureTableContext.Attributes;
+﻿using TableWorm;
+using TableWorm.Attributes;
 using System.Text.Json.Serialization;
 
 namespace foozApi.Models;
