@@ -84,7 +84,7 @@ const EditMatchesOrderPage = () => {
 
 export default EditMatchesOrderPage;
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const leagueId = params["id"];
 
   const apiUrl = process.env.API_URL ?? "";

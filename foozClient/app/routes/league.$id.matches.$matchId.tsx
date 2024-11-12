@@ -50,14 +50,14 @@ const MatchPage = () => {
         )}
       </TournamentNavBar>
       <div className="flex flex-row gap-1 sm:gap-4 flex-wrap mx-auto justify-center my-2">
-        {!!current ? card : "Error loading match.."}
+        {current ? card : "Error loading match.."}
       </div>
     </div>
   );
 };
 export default MatchPage;
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const tournamentId = params["id"];
   const matchId = params["matchId"];

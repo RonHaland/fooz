@@ -3,7 +3,7 @@ import { useButtonStyles } from "~/hooks";
 type Props = {
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   submit?: boolean;
-  children?: any;
+  children?: React.JSX.Element | string;
   disabled?: boolean;
   className?: string;
   colorCode?:

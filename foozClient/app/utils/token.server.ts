@@ -11,7 +11,7 @@ export const GetTokenFromRequest = (request: Request) => {
     ? session.indexOf(".")
     : session.length;
 
-  var base64Data = session.substring(b64start + 1, b64end) ?? "";
+  const base64Data = session.substring(b64start + 1, b64end) ?? "";
   const json = atob(base64Data);
   const data = JSON.parse(json);
   return data.user.accessToken;

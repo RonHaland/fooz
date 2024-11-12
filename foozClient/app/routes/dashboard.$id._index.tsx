@@ -31,7 +31,7 @@ const TournamentDashboardPage = () => {
 
 export default TournamentDashboardPage;
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = params["id"];
 
   const apiUrl = process.env.API_URL ?? "";

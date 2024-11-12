@@ -49,7 +49,7 @@ export const Pagination = ({ page, totalPages, setPage }: Props) => {
     const myPage = a + 1;
     const isCurrentPage = myPage === displayPage;
     return (
-      <div
+      <button
         className={`flex flex-col justify-center rounded-full text-slate-100 ${
           isCurrentPage
             ? "bg-sky-900 cursor-default"
@@ -59,7 +59,7 @@ export const Pagination = ({ page, totalPages, setPage }: Props) => {
         onClick={() => setPage(myPage)}
       >
         {myPage}
-      </div>
+      </button>
     );
   });
 
@@ -104,9 +104,9 @@ const PaginationArrow = ({
   }`;
 
   return enabled ? (
-    <span onClick={onclick} className={className}>
+    <button onClick={onclick} className={className}>
       {arrow}
-    </span>
+    </button>
   ) : (
     <span className={className}>{arrow}</span>
   );

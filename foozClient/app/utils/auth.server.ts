@@ -21,14 +21,9 @@ const discordStrategy = new DiscordStrategy(
     clientSecret: process.env.DISCORD_AUTH_CLIENT_SECRET ?? "",
     callbackURL: process.env.DISCORD_AUTH_CALLBACK_URL ?? "",
     // Provide all the scopes you want as an array
-    scope: [ "identify" ],
+    scope: ["identify"],
   },
-  async ({
-    accessToken,
-    refreshToken,
-    extraParams,
-    profile,
-  }): Promise<DiscordUser> => {
+  async ({ accessToken, refreshToken, profile }): Promise<DiscordUser> => {
     // Get extra data?
 
     return {

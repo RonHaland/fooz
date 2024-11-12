@@ -1,6 +1,6 @@
 import { json, type ActionFunctionArgs } from "@remix-run/node";
 
-export const loader = async ({ request, params }: ActionFunctionArgs) => {
+export const loader = async ({ params }: ActionFunctionArgs) => {
   const playerCount = params["playerCount"];
   const apiUrl = process.env.API_URL;
 
@@ -11,6 +11,6 @@ export const loader = async ({ request, params }: ActionFunctionArgs) => {
     }
   );
 
-  var data = await result.json();
+  const data = await result.json();
   return json([...data]);
 };

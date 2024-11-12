@@ -1,5 +1,5 @@
 type Props = {
-  children?: any;
+  children?: JSX.Element | JSX.Element[] | string;
 };
 
 export const RankedBoard = ({ children }: Props) => {

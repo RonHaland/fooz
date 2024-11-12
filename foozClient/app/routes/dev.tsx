@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect } from "react";
 import { ActionButton } from "~/components";
 import { useWebSocket } from "~/hooks/useWebSocket";

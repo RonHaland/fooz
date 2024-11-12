@@ -237,7 +237,7 @@ const CurrentMatchDashboardPage = () => {
 
 export default CurrentMatchDashboardPage;
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const tournamentId = params["id"];
   let current: LeagueProgress | null = null;

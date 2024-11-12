@@ -6,7 +6,7 @@ type Props = {
   roundNumber?: number;
 };
 
-export const MatchCardDraggable = ({ match, roundNumber = 0 }: Props) => {
+export const MatchCardDraggable = ({ match }: Props) => {
   const winningTeam = !match.isCompleted
     ? -1
     : match.team1Score > match.team2Score
