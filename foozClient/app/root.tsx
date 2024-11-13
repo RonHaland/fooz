@@ -5,7 +5,6 @@ import type {
 } from "@remix-run/node";
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -15,6 +14,7 @@ import "./tailwind.css";
 import { getFeatures } from "./utils/features";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { LoadingIndicator } from "./components/LoadingIndicator";
 
 export const links: LinksFunction = () => [];
 
@@ -33,6 +33,7 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-gradient-to-bl from-sky-100 to-indigo-300 dark:from-slate-700 dark:to-slate-950 text-slate-700 dark:text-slate-400 min-h-[100lvh]">
+        <LoadingIndicator />
         <DndProvider
           backend={HTML5Backend}
           options={{ enableMouseEvents: true }}
@@ -41,7 +42,6 @@ export default function App() {
         </DndProvider>
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
