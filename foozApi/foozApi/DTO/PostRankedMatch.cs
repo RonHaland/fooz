@@ -2,5 +2,5 @@
 
 public class PostRankedMatch
 {
-    public string[] PlayerIds { get; set; }
+    public string[] PlayerIds { get; set; } = [];
 }
