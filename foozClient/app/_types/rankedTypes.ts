@@ -3,7 +3,7 @@ export type RankedPlayer = {
   name: string;
   id: string;
   modifiedDate: string;
-}
+};
 
 export type RankedMatch = {
   id: string;
@@ -16,10 +16,11 @@ export type RankedMatch = {
   team2Player2: RankedPlayer;
   team2Score: number;
   players: RankedPlayer[];
-}
+};
 
 export type CreateRankedMatchState = {
   randomTeamsList: string[];
   team1List: string[];
   team2List: string[];
-}
+  useRandomTeams: boolean;
+};

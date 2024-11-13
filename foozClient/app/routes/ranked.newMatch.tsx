@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import {
   Form,
@@ -6,9 +7,8 @@ import {
   useActionData,
   useLoaderData,
 } from "@remix-run/react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FaFutbol } from "react-icons/fa6";
-import type { LoaderFunctionArgs } from "react-router";
 import { CreateRankedMatchState, RankedPlayer } from "~/_types";
 import { ActionButton, ToggleSwitch } from "~/components";
 import { DraggablePlayer } from "~/components/DraggablePlayer";
@@ -110,13 +110,14 @@ const RankedNewMatchPage = () => {
           p.name.toLocaleLowerCase().includes(playerFilter.toLocaleLowerCase())
         )
         .slice(0, 10)
-        .map((p, i) => (
+        .map((p) => (
           <DraggablePlayer
             key={p.id}
             player={p}
             onAddPlayer={addPlayer}
           ></DraggablePlayer>
         )),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [createMatchForm, playerFilter]
   );
 
@@ -212,11 +213,11 @@ const RankedNewMatchPage = () => {
 
 export default RankedNewMatchPage;
 
-export const meta: MetaFunction = ({}) => {
+export const meta: MetaFunction = () => {
   return [{ title: "Create Ranked Match" }];
 };
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async () => {
   requireFeature("Ranked");
 
   const url = `${process.env.API_URL}/Ranked/Players`;

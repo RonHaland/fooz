@@ -25,14 +25,17 @@ export const ToggleSwitch = ({
 
   useEffect(() => {
     onToggle(state);
-  }, [state]);
+  }, [onToggle, state]);
+
+  const onClasses = `${useButtonStyles(onColor, disabled, "p-1")} ${className}`;
+  const offClasses = `${useButtonStyles(
+    offColor,
+    disabled,
+    "p-1"
+  )} ${className}`;
 
   const getClassState = () => {
-    let color = onColor;
-    if (!state) {
-      color = offColor;
-    }
-    return `${useButtonStyles(color, disabled, "p-1")} ${className}`;
+    return state ? onClasses : offClasses;
   };
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {

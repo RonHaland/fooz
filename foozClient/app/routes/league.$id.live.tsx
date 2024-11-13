@@ -26,11 +26,11 @@ const LivePage = () => {
   } | null>(null);
   const [ot, setOt] = useState(120);
 
-  var team1players = [
+  const team1players = [
     progress?.currentMatch?.team1Player1.id,
     progress?.currentMatch?.team1Player2.id,
   ];
-  var team2players = [
+  const team2players = [
     progress?.currentMatch?.team2Player1.id,
     progress?.currentMatch?.team2Player2.id,
   ];
@@ -209,7 +209,7 @@ const LivePage = () => {
 
 export default LivePage;
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const id = params["id"];
   const wsBaseUrl = apiUrl.replace("https", "wss");

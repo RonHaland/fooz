@@ -18,19 +18,19 @@ const MatchesDashboardPage = () => {
   useEffect(() => {
     const match = matches?.find((m) => m.id == editMatch?.id);
     setEditMatch(match);
-  }, [matches, setEditMatch]);
+  }, [matches, setEditMatch, editMatch]);
 
-  const scores = matches?.map((p, i) => {
-    const onClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const scores = matches?.map((p) => {
+    const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();
       setEditMatch(p);
       editModalRef.current?.showModal();
     };
     return (
-      <div key={p.id} onClick={onClick}>
+      <button key={p.id} onClick={onClick}>
         <MatchCard match={p} roundNumber={p.order} />
-      </div>
+      </button>
     );
   });
   return (
@@ -52,7 +52,7 @@ const MatchesDashboardPage = () => {
 
 export default MatchesDashboardPage;
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const leagueId = params["id"];
 
   const apiUrl = process.env.API_URL ?? "";

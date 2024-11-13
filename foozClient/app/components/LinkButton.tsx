@@ -3,7 +3,7 @@ import { useButtonStyles } from "~/hooks";
 
 type Props = {
   href: string;
-  children?: any;
+  children?: JSX.Element | string;
   disabled?: boolean;
   className?: string;
   outlined?: boolean;

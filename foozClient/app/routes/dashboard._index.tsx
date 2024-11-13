@@ -1,4 +1,4 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Form,
@@ -34,6 +34,7 @@ const DashboardPage = () => {
   );
   useEffect(() => {
     setButtons(navButtons);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const DashboardPage = () => {
   }, [actionData]);
   return (
     <div className="flex flex-col container mx-auto items-center pt-8">
-      <LeagueList leagues={leagues as any} manage />
+      <LeagueList leagues={leagues as never} manage />
       <Form method="DELETE">
         <input type="hidden" name="id" value={deleteStatus?.id ?? ""} />
         <input type="hidden" name="name" value={deleteStatus?.name ?? ""} />
@@ -60,7 +61,7 @@ const DashboardPage = () => {
 
 export default DashboardPage;
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async () => {
   const apiUrl = process.env.API_URL;
   let leagues: LeagueListItem[] = [];
 
@@ -88,7 +89,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const token = GetTokenFromRequest(request);
     const fd = await request.formData();
     const url = process.env.API_URL;
-    const result = await fetch(`${url}/league/${fd.get("id")}`, {
+    await fetch(`${url}/league/${fd.get("id")}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

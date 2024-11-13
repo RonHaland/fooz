@@ -1,9 +1,7 @@
 import { MetaFunction, json, useLoaderData } from "@remix-run/react";
 import { FaRankingStar } from "react-icons/fa6";
-import type { LoaderFunctionArgs } from "react-router";
 import { RankedPlayer } from "~/_types";
-import { LinkButton, RankedRow } from "~/components";
-import { RankedBoard } from "~/components";
+import { LinkButton, RankedRow, RankedBoard } from "~/components";
 import { requireFeature } from "~/utils/features";
 
 const RankedPage = () => {
@@ -11,7 +9,7 @@ const RankedPage = () => {
 
   const playerTable = players
     .sort((a, b) => b.rating - a.rating)
-    .map((p, i) => <RankedRow ind={i + 1} player={p}></RankedRow>);
+    .map((p, i) => <RankedRow key={i} ind={i + 1} player={p}></RankedRow>);
   return (
     <>
       <div className="flex flex-col items-center w-full">
@@ -36,11 +34,11 @@ const RankedPage = () => {
 
 export default RankedPage;
 
-export const meta: MetaFunction = ({}) => {
+export const meta: MetaFunction = () => {
   return [{ title: "Ranked Games" }];
 };
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async () => {
   requireFeature("Ranked");
 
   const url = `${process.env.API_URL}/Ranked/Players`;

@@ -29,7 +29,7 @@ const CreateLeague = () => {
 
   const confirmBoxRef = createRef<HTMLDialogElement>();
 
-  var buttons = <></>;
+  const buttons = <></>;
   useEffect(() => {
     setButtons(buttons);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +42,7 @@ const CreateLeague = () => {
       );
       const data = (await fetchResult.json()) as number[];
 
-      var options = data.map((d, i) => (
+      const options = data.map((d, i) => (
         <option key={i} value={d}>
           {d}
         </option>
@@ -86,10 +86,11 @@ const CreateLeague = () => {
 
     const inputs = (
       <div className="flex flex-col gap-1 w-full">
-        <label>Players: </label>
+        <span>Players: </span>
         {formState.players.concat([""]).map((p, i) => {
           return (
             <PlayerInput
+              id={`player_${i}`}
               number={i}
               key={i}
               onChange={(e) => updatePlayer(e.target.value, i)}
@@ -123,8 +124,9 @@ const CreateLeague = () => {
           <Form method="post">
             <div className="flex flex-row justify-center mt-4">
               <div className="flex flex-col items-start gap-2 min-w-48 text-slate-200 lg:w-80">
-                <label>Name: </label>
+                <label htmlFor="name">Name: </label>
                 <input
+                  id="name"
                   type="text"
                   name="name"
                   value={formState?.name}
@@ -134,8 +136,9 @@ const CreateLeague = () => {
                   }
                 ></input>
                 {playerInputs}
-                <label>Total number of matches: </label>
+                <label htmlFor="matchCount">Total number of matches: </label>
                 <select
+                  id="matchCount"
                   name="matchCount"
                   onChange={onSelectedMatchCountChange}
                   value={formState.matchCount ?? 0}
@@ -180,7 +183,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const url = `${process.env.API_URL}/League`;
   const jsonBody = JSON.stringify(createLeague);
 
-  var response = await fetch(url, {
+  const response = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

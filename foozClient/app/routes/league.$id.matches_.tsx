@@ -36,7 +36,7 @@ const MatchesPage = () => {
 };
 export default MatchesPage;
 
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const tournamentId = params["id"];
   let matches: Match[] = [];

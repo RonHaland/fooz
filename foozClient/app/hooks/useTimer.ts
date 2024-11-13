@@ -12,8 +12,8 @@ export const useTimer = (initalSeconds: number) => {
 
   const toggleStarted = () => {
     setStarted(!started);
-    if (started) { 
-      setPaused(false); 
+    if (started) {
+      setPaused(false);
       setPauseTime(0);
     }
   };
@@ -23,13 +23,13 @@ export const useTimer = (initalSeconds: number) => {
   const setSecondsInner = (seconds: number) => {
     setSeconds(seconds);
     setTime(seconds);
-  }
+  };
 
   useEffect(() => {
-    if (paused){
+    if (paused) {
       const pausedAt = new Date();
-      if (pauseTime > 0){
-        pausedAt.setTime(pausedAt.getTime() - (pauseTime * 1000));
+      if (pauseTime > 0) {
+        pausedAt.setTime(pausedAt.getTime() - pauseTime * 1000);
       }
 
       const id = setInterval(() => {
@@ -37,8 +37,8 @@ export const useTimer = (initalSeconds: number) => {
         const diff = Math.abs(pausedAt.getTime() - now.getTime()) / 1000;
         setPauseTime(diff);
       }, 50);
-      
-      setPauseIntervalId(id as any as number);
+
+      setPauseIntervalId(id as unknown as number);
     } else {
       clearInterval(pauseIntervalId);
       setPauseIntervalId(-1);
@@ -53,7 +53,7 @@ export const useTimer = (initalSeconds: number) => {
 
   useEffect(() => {
     setTime(seconds + pauseTime - passedTime);
-  }, [passedTime, pauseTime, seconds])
+  }, [passedTime, pauseTime, seconds]);
 
   useEffect(() => {
     if (started) {
@@ -63,7 +63,7 @@ export const useTimer = (initalSeconds: number) => {
         const diff = Math.abs(startedAt.getTime() - now.getTime()) / 1000;
         setPassedTime(diff);
       }, 50);
-      setIntervalId(id as any as number);
+      setIntervalId(id as unknown as number);
     } else {
       clearInterval(intervalId);
       setIntervalId(-1);
@@ -78,5 +78,13 @@ export const useTimer = (initalSeconds: number) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started]);
 
-  return {timeLeft: time, timePaused: pauseTime, toggleStarted, togglePause, setSeconds: setSecondsInner, isStarted: started, isPaused: paused};
-}
+  return {
+    timeLeft: time,
+    timePaused: pauseTime,
+    toggleStarted,
+    togglePause,
+    setSeconds: setSecondsInner,
+    isStarted: started,
+    isPaused: paused,
+  };
+};

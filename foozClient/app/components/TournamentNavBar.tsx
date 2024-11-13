@@ -2,7 +2,11 @@ import { useParams } from "@remix-run/react";
 import { LinkButton } from "./LinkButton";
 
 type Props = {
-  children?: any;
+  children?:
+    | (JSX.Element | string | undefined | false)[]
+    | JSX.Element
+    | string
+    | undefined;
 };
 
 export const TournamentNavBar = ({ children }: Props) => {

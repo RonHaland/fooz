@@ -3,7 +3,6 @@ import type { Team } from "~/_types";
 export const TeamDisplay = ({
   team,
   align = "left",
-  matchId,
 }: {
   team?: Team;
   align?: "left" | "right";

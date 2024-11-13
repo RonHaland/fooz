@@ -1,4 +1,3 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { LeagueListItem } from "~/_types/tournament";
 import { LeagueList } from "~/components/LeagueList";
@@ -6,7 +5,7 @@ import { LeagueList } from "~/components/LeagueList";
 const LeaguePage = () => {
   const { leagues } = useLoaderData<typeof loader>();
 
-  const tournamentItems = leagues as any as LeagueListItem[];
+  const tournamentItems = leagues as unknown as LeagueListItem[];
   return (
     <div>
       <LeagueList leagues={tournamentItems} manage={false} />
@@ -16,7 +15,7 @@ const LeaguePage = () => {
 
 export default LeaguePage;
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async () => {
   const apiUrl = process.env.API_URL ?? "";
   let leagues: LeagueListItem[] = [];
   try {

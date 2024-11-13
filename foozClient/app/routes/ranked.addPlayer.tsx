@@ -1,8 +1,7 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { Form, MetaFunction, json } from "@remix-run/react";
 import { useState } from "react";
-import { FaPerson, FaPersonFalling } from "react-icons/fa6";
-import type { LoaderFunctionArgs } from "react-router";
+import { FaPersonFalling } from "react-icons/fa6";
 import { ActionButton } from "~/components";
 import { requireFeature } from "~/utils/features";
 import { GetTokenFromRequest } from "~/utils/token.server";
@@ -18,8 +17,9 @@ const RankedAddPlayerPage = () => {
         </div>
         <Form method="POST">
           <div className="flex flex-col gap-2 my-10">
-            <label>Name: </label>
+            <label htmlFor="name">Name: </label>
             <input
+              id="name"
               type="text"
               name="name"
               value={name}
@@ -38,11 +38,11 @@ const RankedAddPlayerPage = () => {
 
 export default RankedAddPlayerPage;
 
-export const meta: MetaFunction = ({}) => {
+export const meta: MetaFunction = () => {
   return [{ title: "Add Ranked Player" }];
 };
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async () => {
   requireFeature("Ranked");
 
   return json({});

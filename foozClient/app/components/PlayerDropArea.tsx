@@ -26,11 +26,11 @@ export const PlayerDropArea = ({
     ...(allPlayers?.map((p) => ({ [p.id]: p })) ?? [])
   );
 
-  const internalOnDrop = (item: any) => {
+  const internalOnDrop = (item: RankedPlayer) => {
     onDrop(item.id, id);
   };
 
-  const [item, drop] = useDrop(
+  const [, drop] = useDrop(
     () => ({
       accept: ItemTypes.PLAYER,
       drop: internalOnDrop,
@@ -42,7 +42,7 @@ export const PlayerDropArea = ({
     setInternalPlayers(playerPool);
   }, [playerPool]);
 
-  var selectedPlayers = useMemo(
+  const selectedPlayers = useMemo(
     () => (
       <>
         {internalPlayers.map((p, i) => {
@@ -79,7 +79,7 @@ export const PlayerDropArea = ({
         })}
       </>
     ),
-    [internalPlayers]
+    [internalPlayers, onRemove, playerMap]
   );
 
   return (
