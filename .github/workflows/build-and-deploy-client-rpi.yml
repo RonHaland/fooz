@@ -1,0 +1,82 @@
+name: build and deploy client
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "DEV | TEST | PROD"
+        type: string
+        required: true
+        default: "DEV"
+
+env:
+  ENVIRONMENT: ${{ inputs.environment }}
+  ENVIRONMENT_LOWER: ""
+  SERVER_IP: api.ronha.land
+  DEV_PORT: 8381
+  TEST_PORT: 8481
+  PROD_PORT: 8581
+  DEV_API_PORT: 8380
+  TEST_API_PORT: 8480
+  PROD_API_PORT: 8580
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: set lowercase Environment variable
+        run: |
+          UPPERCASE_VALUE="${{ env.ENVIRONMENT }}"
+          LOWERCASE_VALUE=$(echo "$UPPERCASE_VALUE" | tr '[:upper:]' '[:lower:]')
+          echo "ENVIRONMENT_LOWER=$LOWERCASE_VALUE" >> $GITHUB_ENV
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: create ssh key on agent
+        run: |
+          mkdir ./.ssh
+          touch ./.ssh/rsa_key
+          echo "${{ secrets.SSH_KEY }}" > ./.ssh/rsa_key
+          chmod 600 ./.ssh/rsa_key
+
+      - name: copy files to server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} "mkdir -p ./temp/${{ env.ENVIRONMENT_LOWER }}-client"
+          scp -o StrictHostKeyChecking=no -i ./.ssh/rsa_key -r . ronny@${{ env.SERVER_IP }}:./temp/${{ env.ENVIRONMENT_LOWER }}-client/
+
+      - name: configure network
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} "
+            sudo docker network inspect ${{ env.ENVIRONMENT_LOWER }}-fooz-net || \
+              sudo docker network create ${{ env.ENVIRONMENT_LOWER }}-fooz-net
+          "
+
+      - name: build docker file
+        env:
+          HTTP_PORT: ${{ env[format('{0}_PORT', inputs.environment)] }}
+          API_PORT: ${{ env[format('{0}_API_PORT', inputs.environment)] }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} << EOF
+            Local_env=${{ env.ENVIRONMENT_LOWER }}
+            cd temp/\${Local_env}-client/
+            sudo docker build -t \${Local_env}foozclient -f ./foozClient/Dockerfile ./foozClient
+            sudo docker stop \${Local_env}foozclient
+            sudo docker container rm \${Local_env}foozclient
+            sudo docker run -d \
+              --name \${Local_env}foozclient \
+              --restart unless-stopped \
+              --fooz-network \${Local_env}-fooz-net \
+              -p ${{ env.HTTP_PORT }}:8080 \
+              -e NODE_ENV="production" \
+              -e API_URL="http://\${Local_env}foozapi:${{ env.API_PORT }}" \
+              -e DISCORD_AUTH_CLIENT_ID="${{ secrets.DISCORD_AUTH_CLIENT_ID }}" \
+              -e DISCORD_AUTH_CLIENT_SECRET="${{ secrets.DISCORD_AUTH_CLIENT_SECRET }}" \
+              -e DISCORD_AUTH_CALLBACK_URL="${{ secrets.DISCORD_AUTH_CALLBACK_URL }}" \
+              \${Local_env}foozclient
+            exit 
+          EOF
+
+      - name: clean up files
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} "sudo rm -r temp/${{ env.ENVIRONMENT_LOWER }}-client"

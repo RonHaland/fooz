@@ -1,0 +1,17 @@
+name: Deploy PROD environment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-api:
+    uses: ./.github/workflows/build-and-deploy-rpi.yml
+    with:
+      environment: PROD
+    secrets: inherit
+
+  deploy-client:
+    uses: ./.github/workflows/build-and-deploy-client-rpi.yml
+    with:
+      environment: PROD
+    secrets: inherit

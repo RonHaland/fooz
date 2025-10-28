@@ -1,0 +1,17 @@
+name: Deploy DEV environment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-api:
+    uses: ./.github/workflows/build-and-deploy-rpi.yml
+    with:
+      environment: DEV
+    secrets: inherit
+
+  deploy-client:
+    uses: ./.github/workflows/build-and-deploy-client-rpi.yml
+    with:
+      environment: DEV
+    secrets: inherit
