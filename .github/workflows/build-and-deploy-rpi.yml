@@ -46,7 +46,7 @@ jobs:
       - name: copy files to server
         run: |
           ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} "mkdir -p ./temp/${{ env.ENVIRONMENT_LOWER }}"
-          scp -o StrictHostKeyChecking=no -i ./.ssh/rsa_key -r . ronny@${{ env.SERVER_IP }}:./temp/${{ env.ENVIRONMENT_LOWER }}/
+          scp -o StrictHostKeyChecking=no -i ./.ssh/rsa_key -r ./foozApi ronny@${{ env.SERVER_IP }}:./temp/${{ env.ENVIRONMENT_LOWER }}/
 
       - name: configure network
         run: |
@@ -68,10 +68,10 @@ jobs:
             TABLE_PORT=$(($STORAGE_PORT + 2))
             mkdir -p storage/$Local_env
             echo "setting up storage for $Local_env using ports($BLOB_PORT $QUEUE_PORT $TABLE_PORT) based on port $STORAGE_PORT" >&2
-            sudo docker container inspect ${Local_env}azurite >/dev/null 2>&1 || \
+            sudo docker container inspect ${Local_env}foozazurite >/dev/null 2>&1 || \
               (sudo docker pull mcr.microsoft.com/azure-storage/azurite >&2 && \
               sudo docker run -d \
-                --name ${Local_env}azurite \
+                --name ${Local_env}foozazurite \
                 --restart unless-stopped \
                 --network ${Local_env}-fooz-net \
                 -v /home/ronny/storage/${Local_env}:/data \
@@ -80,8 +80,8 @@ jobs:
                 -p $TABLE_PORT:$TABLE_PORT \
                 mcr.microsoft.com/azure-storage/azurite \
                 azurite -l /data --blobPort $BLOB_PORT --queuePort $QUEUE_PORT --tablePort $TABLE_PORT \
-                --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0)
-            STORAGE_IP=$(sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${Local_env}azurite)
+                --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 >/dev/null 2>&1)
+            STORAGE_IP=$(sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${Local_env}foozazurite)
             echo "$STORAGE_IP"
           EOF
           )" >> $GITHUB_ENV
@@ -107,16 +107,15 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} << 'EOF'
             Local_env=${{ env.ENVIRONMENT_LOWER }}
-            cd temp/$Local_env/
-            sudo docker build -t ${Local_env}foozapi -f ./foozApi/foozApi/Dockerfile .
+            cd temp/$Local_env/foozApi
+            sudo docker build --build-arg HTTP_PORT=${{ env.HTTP_PORT }} -t ${Local_env}foozapi .
             sudo docker stop ${Local_env}foozapi
             sudo docker container rm ${Local_env}foozapi
             sudo docker run -d \
               --name ${Local_env}foozapi \
               --restart unless-stopped \
-              --fooz-network ${Local_env}-fooz-net \
+              --network ${Local_env}-fooz-net \
               -p ${{ env.HTTP_PORT }}:${{ env.HTTP_PORT }} \
-              -e ASPNETCORE_HTTP_PORTS=${{ env.HTTP_PORT }} \
               -e "ConnectionStrings__StorageAccount"="${{ env.STORAGE_CONNECTION_STRING }}" \
               -e Environment="${{ env.ENVIRONMENT }}" \
               ${Local_env}foozapi

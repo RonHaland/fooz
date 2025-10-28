@@ -66,7 +66,7 @@ jobs:
             sudo docker run -d \
               --name \${Local_env}foozclient \
               --restart unless-stopped \
-              --fooz-network \${Local_env}-fooz-net \
+              --network \${Local_env}-fooz-net \
               -p ${{ env.HTTP_PORT }}:8080 \
               -e NODE_ENV="production" \
               -e API_URL="http://\${Local_env}foozapi:${{ env.API_PORT }}" \
