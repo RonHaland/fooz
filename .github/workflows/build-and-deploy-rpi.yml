@@ -46,7 +46,15 @@ jobs:
       - name: copy files to server
         run: |
           ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} "mkdir -p ./temp/${{ env.ENVIRONMENT_LOWER }}"
-          scp -o StrictHostKeyChecking=no -i ./.ssh/rsa_key -r ./foozApi ronny@${{ env.SERVER_IP }}:./temp/${{ env.ENVIRONMENT_LOWER }}/
+          scp -o StrictHostKeyChecking=no -i ./.ssh/rsa_key -r ./foozApi ./nginx ronny@${{ env.SERVER_IP }}:./temp/${{ env.ENVIRONMENT_LOWER }}/
+
+      - name: copy nginx configs
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} "
+            sudo cp temp/${{ env.ENVIRONMENT_LOWER }}/nginx/*.conf /etc/nginx/sites-available/ && \
+            sudo nginx -t && \
+            sudo systemctl reload nginx
+          "
 
       - name: configure network
         run: |
@@ -107,7 +115,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ./.ssh/rsa_key ronny@${{ env.SERVER_IP }} << 'EOF'
             Local_env=${{ env.ENVIRONMENT_LOWER }}
-            cd temp/$Local_env/foozApi
+            cd temp/$Local_env/foozApi/foozApi
             sudo docker build --build-arg HTTP_PORT=${{ env.HTTP_PORT }} -t ${Local_env}foozapi .
             sudo docker stop ${Local_env}foozapi
             sudo docker container rm ${Local_env}foozapi
