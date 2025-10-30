@@ -115,7 +115,7 @@ public sealed class LeagueService
         var leagues = await _tableStorage.QueryAsync<League>($"RowKey eq '{id}'");
         var league = leagues?.FirstOrDefault();
         if (league == null) return;
-        await _tableStorage.Delete(league, 3);
+        await _tableStorage.DeleteAsync(league, 3);
     }
 
 
