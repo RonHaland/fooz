@@ -124,7 +124,7 @@ jobs:
               --restart unless-stopped \
               --network ${Local_env}-fooz-net \
               -p ${{ env.HTTP_PORT }}:${{ env.HTTP_PORT }} \
-              -e "ConnectionStrings__StorageAccount"="${{ env.STORAGE_CONNECTION_STRING }}" \
+              -e "TableConnectionString"="${{ env.STORAGE_CONNECTION_STRING }}" \
               -e Environment="${{ env.ENVIRONMENT }}" \
               ${Local_env}foozapi
             exit 

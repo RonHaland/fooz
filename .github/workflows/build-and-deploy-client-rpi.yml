@@ -75,7 +75,7 @@ jobs:
               --name \${Local_env}foozclient \
               --restart unless-stopped \
               --network \${Local_env}-fooz-net \
-              -p ${{ env.HTTP_PORT }}:8080 \
+              -p ${{ env.HTTP_PORT }}:3000 \
               -e NODE_ENV="production" \
               -e API_URL="http://\${Local_env}foozapi:${{ env.API_PORT }}" \
               -e DISCORD_AUTH_CLIENT_ID="${{ secrets.DISCORD_AUTH_CLIENT_ID }}" \
