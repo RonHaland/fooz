@@ -212,8 +212,10 @@ export default LivePage;
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const apiUrl = process.env.API_URL ?? "";
   const id = params["id"];
-  const wsBaseUrl = apiUrl.replace("https", "wss");
-  const wsConnectionEndpoint = `${wsBaseUrl}/league/${id}/live`;
+
+  const wsConnectionEndpoint = process.env.WEBSOCKET_URL
+    ? `${process.env.WEBSOCKET_URL}/league/${id}/live`
+    : `${apiUrl.replace("https", "wss")}/league/${id}/live`;
 
   let league: League | null = null;
   let progress: LeagueProgress | null = null;
