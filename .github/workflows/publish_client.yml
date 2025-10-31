@@ -2,11 +2,6 @@ name: Build & publish client image
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "foozClient/**"
 
 env:
   AZ_RESOURCE_GROUP: rg-fooz-tournament
