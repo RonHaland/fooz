@@ -14,5 +14,13 @@ export const GetTokenFromRequest = (request: Request) => {
   const base64Data = session.substring(b64start + 1, b64end) ?? "";
   const json = atob(base64Data);
   const data = JSON.parse(json);
-  return data.user.accessToken;
+
+  // Check for OAuth errors in the session
+  if (data["__flash_auth:error__"]) {
+    const errorMessage = data["__flash_auth:error__"]?.message;
+    console.error("OAuth authentication error:", errorMessage);
+    return null;
+  }
+
+  return data.user?.accessToken;
 };

@@ -5,5 +5,6 @@ export const loader: LoaderFunction = ({ request }) => {
   return auth.authenticate("discord", request, {
     successRedirect: "/dashboard",
     failureRedirect: "/login",
+    throwOnError: true,
   });
 };

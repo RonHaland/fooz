@@ -6,7 +6,7 @@ import type { LeagueProgress, PutMatch, WinType } from "~/_types";
 import { ActionButton } from "~/components";
 import { MatchInfo } from "~/components/MatchInfo";
 import { AltModal } from "~/components/Modal/AltModal";
-import { usePostTimerUpdates } from "~/hooks";
+import { usePostDonut, usePostTimerUpdates } from "~/hooks";
 import { auth } from "~/utils/auth.server";
 import { GetTokenFromRequest } from "~/utils/token.server";
 
@@ -14,6 +14,7 @@ const CurrentMatchDashboardPage = () => {
   const { current } = useLoaderData<typeof loader>();
   const { id } = useParams();
   const { setUpdate } = usePostTimerUpdates(id ?? "");
+  const { setDonut } = usePostDonut(id ?? "");
   const [isPaused, setIsPaused] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [editTimerValue, setEditTimerValue] = useState(360);
@@ -44,6 +45,9 @@ const CurrentMatchDashboardPage = () => {
   };
   const editOverTimer = (seconds: number) => {
     setUpdate({ timerUpdate: "EditOvertime", amount: seconds });
+  };
+  const donut = () => {
+    setDonut(true);
   };
   const minMaxValue = (value: number, min: number = 0, max: number = 3600) =>
     Math.min(max, Math.max(value, min));
@@ -175,6 +179,10 @@ const CurrentMatchDashboardPage = () => {
               </Form>
             </div>
           </div>
+
+          <ActionButton onClick={donut} colorCode="Info" className="w-[60%]">
+            Donut 🍩
+          </ActionButton>
         </div>
       )}
       <AltModal ref={editModalRef}>

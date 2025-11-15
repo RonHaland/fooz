@@ -33,6 +33,24 @@ public class LiveUpdateService
         await Task.WhenAll(tasks);
     }
 
+    public async Task SendDonutUpdate(string id)
+    {
+        if (!webSockets.ContainsKey(id))
+        {
+            return;
+        }
+        
+        var bytes = Encoding.UTF8.GetBytes("donut");
+        var buffer = new ArraySegment<byte>(bytes);
+        var tasks = new List<Task>();
+        foreach (WebSocket ws in webSockets[id])
+        {
+            tasks.Add(ws.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None));
+        }
+        
+        await Task.WhenAll(tasks);
+    }
+
     public async Task SendUpdate(string id)
     {
         if (!webSockets.ContainsKey(id))

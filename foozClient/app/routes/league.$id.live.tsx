@@ -3,6 +3,7 @@ import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import type { League, LeagueProgress } from "~/_types/tournament";
 import { MatchCard, Scoreboard, TeamDisplay } from "~/components";
+import { Confetti } from "~/components/Confetti";
 import { ScoreRow } from "~/components/Scoreboard/ScoreRow";
 import { useTimer } from "~/hooks";
 import { useWebSocket } from "~/hooks/useWebSocket";
@@ -25,7 +26,7 @@ const LivePage = () => {
     amount: string;
   } | null>(null);
   const [ot, setOt] = useState(120);
-
+  const [donut, setDonut] = useState(false);
   const team1players = [
     progress?.currentMatch?.team1Player1.id,
     progress?.currentMatch?.team1Player2.id,
@@ -113,6 +114,9 @@ const LivePage = () => {
         case "timer":
           setTimerUpdate({ update: parts[1], amount: parts[2] });
           break;
+        case "donut":
+          setDonut(true);
+          break;
         default:
           console.log("unkown message: " + e);
           break;
@@ -122,6 +126,18 @@ const LivePage = () => {
     setOnMessage(() => onMessage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(
+    function resetDonut() {
+      if (donut) {
+        const timeout = setTimeout(() => {
+          setDonut(false);
+        }, 2000);
+        return () => clearTimeout(timeout);
+      }
+    },
+    [donut]
+  );
 
   return (
     <div className="h-[100dvh]">
@@ -153,6 +169,7 @@ const LivePage = () => {
             />
             <div className="flex flex-col justify-around items-center mt-6 gap-2">
               <span className="h-fit">VS</span>
+              {donut && <Confetti donut={true} />}
             </div>
             <TeamDisplay
               team={{

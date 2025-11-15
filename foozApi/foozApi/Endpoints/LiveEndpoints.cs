@@ -34,6 +34,14 @@ public static class LiveEndpoints
         .WithName("Send Timer Update")
         .WithCommonOpenApi();
 
+        app.MapPost("/League/{id}/live/donut", async (string id) =>
+        {
+            Console.WriteLine("DONUT! 🍩");
+            await liveUpdater.SendDonutUpdate(id);
+        })
+        .WithName("Send Donut Update")
+        .WithCommonOpenApi();
+
         return app;
     }
 }
